@@ -40,6 +40,12 @@ controle = ttk.LabelFrame(win)
 
 controle.grid(column=0,row=1, padx=8,pady=4)
 
+def hexTOint(word):
+    if len(word) == 2:
+        word=word[0]+'0'+word[1]
+        print("word", word)
+    return (int(word,16)/100)
+
 def atualizar():
     from subprocess import Popen, PIPE
     p = Popen(['./rk8511.sh'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -47,30 +53,14 @@ def atualizar():
     print("frame:", output)
     out = str(output)
     out = out.split()
-    Vhex = out[7]+out[6]
-    Vint = int(Vhex,16)
-    Vint = Vint/1000
-    Vint = str(Vint)
 
-    Phex = out[15]+out[14]
-    Pint = int(Phex,16)
-    Pint = Pint/100
-    Pint = str(Pint)
+    Vint = str(hexTOint(out[7]+out[6])/10)
 
-    Ihex = out[11]+out[10]
-    Iint = int(Ihex,16)
-    Iint = Iint/10000
-    Iint = str(Iint)
+    Pint = str(hexTOint(out[15]+out[14]))
 
-    Rhex = out[19]+out[18]
-    Rint = int(Rhex,16)
-    Rint = Rint/100
-    Rint = str(Rint)
+    Iint = str(hexTOint(out[11]+out[10])/100)
 
-    print(Vint)
-    print(Pint)
-    print(Iint)
-    print(Rint)
+    Rint = str(hexTOint(out[19]+out[18]))
 
     V.configure(text=Vint)
     W.configure(text=Pint)
