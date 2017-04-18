@@ -7,6 +7,8 @@ win = tk.Tk()
 
 win.title("Software RK8511")
 
+#Frame de Aquisição de Dados
+
 interface = ttk.LabelFrame(win, text='Aquisição de Dados')
 
 interface.grid(column=0,row=0,padx=8,pady=4)
@@ -68,5 +70,19 @@ def atualizar():
     R.configure(text=Rint)
 
 ttk.Button(controle, text="Atualizar", command=atualizar).grid(column=0, row=0)
+
+#Frame de Seleção da Porta
+
+porta = ttk.LabelFrame(win, text='Porta')
+
+porta.grid(column=1,row=0,padx=8,pady=4)
+
+com = ttk.Combobox(porta, width=6, state='readonly')
+
+com['values']=(0,1,2)
+
+com.grid(column=1,row=1,padx=8,pady=16)
+
+com.current(0)
 
 win.mainloop()
