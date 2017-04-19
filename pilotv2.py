@@ -50,25 +50,28 @@ def hexTOint(word):
 
 def atualizar():
     from subprocess import Popen, PIPE
-    p = Popen(['./rk8511.sh'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    output, err = p.communicate(b"input data that is passed to subprocess' stdin")
-    print("frame:", output)
-    out = str(output)
-    out = out.split()
+    if com.get() != ' ':
+        p = Popen(["./rk8511.sh", com.get()], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+        print("frame:", output)
+        out = str(output)
+        out = out.split()
 
-    Vint = str(hexTOint(out[7]+out[6])/10)
+        Vint = str(hexTOint(out[7]+out[6])/10)
 
-    Pint = str(hexTOint(out[15]+out[14]))
+        Pint = str(hexTOint(out[15]+out[14]))
 
-    Iint = str(hexTOint(out[11]+out[10])/100)
+        Iint = str(hexTOint(out[11]+out[10])/100)
 
-    Rint = str(hexTOint(out[19]+out[18]))
+        Rint = str(hexTOint(out[19]+out[18]))
 
-    V.configure(text=Vint)
-    W.configure(text=Pint)
-    I.configure(text=Iint)
-    R.configure(text=Rint)
-
+        V.configure(text=Vint)
+        W.configure(text=Pint)
+        I.configure(text=Iint)
+        R.configure(text=Rint)
+    else:
+        return "Selecione a PORTA de comunicação"
+    
 ttk.Button(controle, text="Atualizar", command=atualizar).grid(column=0, row=0)
 
 #Frame de Seleção da Porta
@@ -79,7 +82,7 @@ porta.grid(column=1,row=0,padx=8,pady=4)
 
 com = ttk.Combobox(porta, width=6, state='readonly')
 
-com['values']=(0,1,2)
+com['values']=(' ',0,1,2)
 
 com.grid(column=1,row=1,padx=8,pady=16)
 
