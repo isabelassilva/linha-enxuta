@@ -53,26 +53,31 @@ def hexTOint(word):
 def atualizar():
     from subprocess import Popen, PIPE
     if com.get() != ' ':
+        mensagem.configure(text=' ')
+
         p = Popen(["./rk8511.sh", com.get()], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = p.communicate(b"input data that is passed to subprocess' stdin")
-        print("frame:", output)
-        out = str(output)
-        out = out.split()
+        if output != b'Can not open comport\n':
+            print("frame:", output)
+            out = str(output)
+            out = out.split()
 
-        Vint = str(hexTOint(out[7]+out[6])/10)
+            Vint = str(hexTOint(out[7]+out[6])/10)
 
-        Pint = str(hexTOint(out[15]+out[14]))
+            Pint = str(hexTOint(out[15]+out[14]))
 
-        Iint = str(hexTOint(out[11]+out[10])/100)
+            Iint = str(hexTOint(out[11]+out[10])/100)
 
-        Rint = str(hexTOint(out[19]+out[18]))
+            Rint = str(hexTOint(out[19]+out[18]))
 
-        V.configure(text=Vint)
-        W.configure(text=Pint)
-        I.configure(text=Iint)
-        R.configure(text=Rint)
+            V.configure(text=Vint)
+            W.configure(text=Pint)
+            I.configure(text=Iint)
+            R.configure(text=Rint)
+        else:
+            mensagem.configure(text=" Falha de comunicaçao: Não foi possível acessar a PORTA.")
     else:
-        return "Selecione a PORTA de comunicação"
+        mensagem.configure(text=" Selecione a PORTA de comunicação.")
 
 ttk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
 
@@ -161,4 +166,9 @@ def enviar():
 
 ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 
+
+
+mensagem = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
+mensagem.grid(column=0,row=9, columnspan=2, stick='WES')
+#mensagem.columnconfigure(0, weight=1)
 win.mainloop()
