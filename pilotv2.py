@@ -158,8 +158,14 @@ for child in entradasModo.winfo_children():
     child.grid_configure(padx=10,pady=6)
     child.configure(state='disabled', width=8)
 
+
 def isnum(str):
     return str.replace('.','',1).isdigit()
+
+
+def intTOhex(num):
+    num = int(num)*1
+    return hex(num)
 
 # Botão "Enviar"
 
@@ -176,6 +182,7 @@ def enviar():
                 else:
                     print("Valor Representável com 3 bytes")
             else:
+                Vhex = intTOhex(Vint)  # Retorna variável do tipo str
                 print("desejo enviar a tensão", V)
         else:
             mensagem.configure(text=" Valor Inválido.")
