@@ -161,14 +161,21 @@ for child in entradasModo.winfo_children():
 # Botão "Enviar"
 
 def enviar():
-
-    pass
+    tipodado = radVar.get()
+    if tipodado == 0:
+        print("desejo enviar a tensão", Vcte.get())
+    elif tipodado == 1:
+        print("desejo enviar a corrente", Icte.get())
+    elif tipodado == 2:
+        print("desejo enviar a potência", Pcte.get())
+    elif tipodado == 3:
+        print("desejo enviar a resistência", Rcte.get())
 
 ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 
-
+# StatusBar
 
 mensagem = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
 mensagem.grid(column=0,row=9, columnspan=2, stick='WES')
-#mensagem.columnconfigure(0, weight=1)
+
 win.mainloop()
