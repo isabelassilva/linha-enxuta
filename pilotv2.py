@@ -169,7 +169,14 @@ def enviar():
         V = Vcte.get()
         if isnum(V):
             mensagem.configure(text=" ")
-            print("desejo enviar a tensão", Vcte.get())
+            Vint = float(V) * 1000
+            if Vint > 65535:
+                if Vint > 150000:
+                    mensagem.configure(text=" Valor Inválido.")
+                else:
+                    print("Valor Representável com 3 bytes")
+            else:
+                print("desejo enviar a tensão", V)
         else:
             mensagem.configure(text=" Valor Inválido.")
     elif tipodado == 1:
