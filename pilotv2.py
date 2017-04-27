@@ -158,12 +158,20 @@ for child in entradasModo.winfo_children():
     child.grid_configure(padx=10,pady=6)
     child.configure(state='disabled', width=8)
 
+def isnum(str):
+    return str.replace('.','',1).isdigit()
+
 # Botão "Enviar"
 
 def enviar():
     tipodado = radVar.get()
     if tipodado == 0:
-        print("desejo enviar a tensão", Vcte.get())
+        V = Vcte.get()
+        if isnum(V):
+            mensagem.configure(text=" ")
+            print("desejo enviar a tensão", Vcte.get())
+        else:
+            mensagem.configure(text=" Valor Inválido.")
     elif tipodado == 1:
         print("desejo enviar a corrente", Icte.get())
     elif tipodado == 2:
