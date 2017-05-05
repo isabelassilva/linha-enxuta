@@ -142,7 +142,8 @@ entradasModo = ttk.Label(modo)
 
 entradasModo.grid(column=refx+1,row=refy, rowspan=len(modos))
 
-Vcte = ttk.Entry(entradasModo)
+strV = tk.StringVar()
+Vcte = ttk.Entry(entradasModo,  textvariable=strV)
 Vcte.grid(column=refx+1,row=refy, sticky=tk.W)
 
 Icte = ttk.Entry(entradasModo)
@@ -163,6 +164,12 @@ def isnum(str):
     return str.replace('.','',1).isdigit()
 
 
+def truncate(f,n):
+    f = str(f)
+    dot = f.find('.')
+    return float(f[:dot+1+n])
+
+
 def intTOhex(num):
     num = int(num)*1
     return hex(num)
@@ -175,9 +182,13 @@ def enviar():
         V = Vcte.get()
         if isnum(V):
             mensagem.configure(text=" ")
-            Vint = float(V) * 1000
-            if Vint > 65535:
+            Vfloat = float(V)
+            Vfloat = truncate(Vfloat, 2)
+            strV.set(Vfloat)
+            Vint = Vfloat*1000
+            if Vint > 65530:
                 if Vint > 150000:
+                    strV.set(150.00)
                     mensagem.configure(text=" Valor Inválido.")
                 else:
                     print("Valor Representável com 3 bytes")
