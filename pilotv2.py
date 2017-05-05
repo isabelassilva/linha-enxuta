@@ -170,39 +170,89 @@ def truncate(f,n):
     return float(f[:dot+1+n])
 
 
+overflow8 = 256
+overflow9 = 512
+
+
+def checksum(hexStr, tipo):
+    if (tipo == 'V'):
+        tam = len(hexStr)
+
+    # 0a operação: tornando os bytes (do valor a ser enviado) somáveis
+        while tam < 6:
+            hexStr = hexStr[:2] + '0' + hexStr[2:]
+            tam = len(hexStr)
+        else:
+            if tam > 6:
+                mensagem.configure(text="Tamanho maior que quatro da representação HEX do valor a se enviado")
+
+        int1 = int(hexStr[2] + hexStr[3], 16)
+        int2 = int(hexStr[4] + hexStr[5], 16)
+
+    # 1a operação: somando o frame byte a byte /55/aa/30/00/+int1+int2
+        soma = 303 + int1 + int2
+
+    # 2a operação: reduzindo a soma a único byte
+
+        if soma > overflow9:
+            byte = soma - overflow9
+
+        elif soma > overflow8:
+            byte = soma - overflow8
+
+    # 3a operação: complementando o byte (negando cada um dos bits)
+        byte_ = 255 - byte
+
+    # 4a operação: somando 1
+        return hex(byte_+1)
+
+
 def intTOhex(num):
     num = int(num)*1
     return hex(num)
 
+
 # Botão "Enviar"
+
 
 def enviar():
     tipodado = radVar.get()
+
     if tipodado == 0:
         V = Vcte.get()
+
         if isnum(V):
             mensagem.configure(text=" ")
-            Vfloat = float(V)
-            Vfloat = truncate(Vfloat, 2)
+
+            Vfloat = truncate(float(V), 2)  # reduzindo o valor de V a duas casas decimais
+
             strV.set(Vfloat)
-            Vint = Vfloat*1000
+
+            Vint = round(Vfloat*1000,0)  # solucionando problemas de arredondamento
+
             if Vint > 65530:
                 if Vint > 150000:
                     strV.set(150.00)
                     mensagem.configure(text=" Valor Inválido.")
                 else:
-                    print("Valor Representável com 3 bytes")
+                    mensagem.configure(text="Valor Representável com 3 bytes")
+
             else:
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
-                print("desejo enviar a tensão", V)
+                crc = checksum(Vhex, 'V')
+                mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
         else:
             mensagem.configure(text=" Valor Inválido.")
+
     elif tipodado == 1:
         print("desejo enviar a corrente", Icte.get())
+
     elif tipodado == 2:
         print("desejo enviar a potência", Pcte.get())
+
     elif tipodado == 3:
         print("desejo enviar a resistência", Rcte.get())
+
 
 ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 
