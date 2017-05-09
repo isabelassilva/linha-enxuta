@@ -44,14 +44,19 @@ for child in interface.winfo_children():
 
 # Funcionalidade "Atualizar"
 
+
 def hexTOint(word):
     if len(word) == 2:
         word=word[0]+'0'+word[1]
         print("word", word)
     return (int(word,16)/100)
 
+
+from subprocess import Popen, PIPE
+
+
 def atualizar():
-    from subprocess import Popen, PIPE
+
     if com.get() != ' ':
         mensagem.configure(text=' ')
 
@@ -131,7 +136,6 @@ def radCall():
             child.configure(state='disabled', width=8)
         Rcte.configure(state='enabled')
 
-    #win.configure(background=colors[radSel])
 
 for row in range(len(modos)):
     tk.Radiobutton(modo, text=modos[row], variable=radVar, value=row, command=radCall).grid(column=refx, row=row, sticky=tk.W)
@@ -158,6 +162,9 @@ Rcte.grid(column=refx+1,row=refy+3, sticky=tk.W)
 for child in entradasModo.winfo_children():
     child.grid_configure(padx=10,pady=6)
     child.configure(state='disabled', width=8)
+
+
+# Botão "Enviar"
 
 
 def isnum(str):
@@ -210,9 +217,6 @@ def checksum(hexStr, tipo):
 def intTOhex(num):
     num = int(num)*1
     return hex(num)
-
-
-# Botão "Enviar"
 
 
 def enviar():
