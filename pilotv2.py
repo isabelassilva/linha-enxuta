@@ -60,7 +60,7 @@ def atualizar():
     if com.get() != ' ':
         mensagem.configure(text=' ')
 
-        p = Popen(["./rk8511.sh", com.get()], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        p = Popen(["./rk8511.sh", com.get(), "RX"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = p.communicate(b"input data that is passed to subprocess' stdin")
         if output != b'Can not open comport\n':
             print("frame:", output)
@@ -245,6 +245,14 @@ def enviar():
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
                 crc = checksum(Vhex, 'V')
                 mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
+
+                ##
+
+                p = Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+
+                ##
+
         else:
             mensagem.configure(text=" Valor Inválido.")
 
