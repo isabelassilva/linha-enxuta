@@ -177,22 +177,26 @@ def truncate(f,n):
     return float(f[:dot+1+n])
 
 
+def fillin(str, n):
+    tam = len(str)
+
+    while tam < n:
+        str = str[:2] + '0' + str[2:]
+        tam = len(str)
+    else:
+        if tam > n:
+            return 1
+    return str
+
+
 overflow8 = 256
 overflow9 = 512
 
 
 def checksum(hexStr, tipo):
     if (tipo == 'V'):
-        tam = len(hexStr)
 
     # 0a operação: tornando os bytes (do valor a ser enviado) somáveis
-        while tam < 6:
-            hexStr = hexStr[:2] + '0' + hexStr[2:]
-            tam = len(hexStr)
-        else:
-            if tam > 6:
-                mensagem.configure(text="Tamanho maior que quatro da representação HEX do valor a se enviado")
-
         int1 = int(hexStr[2] + hexStr[3], 16)
         int2 = int(hexStr[4] + hexStr[5], 16)
 
@@ -203,6 +207,9 @@ def checksum(hexStr, tipo):
 
         if soma > overflow9:
             byte = soma - overflow9
+
+            if byte > overflow8:
+                byte = byte - overflow8
 
         elif soma > overflow8:
             byte = soma - overflow8
@@ -243,13 +250,14 @@ def enviar():
 
             else:
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
+                Vhex = fillin(Vhex, 6)
                 crc = checksum(Vhex, 'V')
+                crc = fillin(crc, 4)
                 mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
                 ##
 
                 p = Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-                output, err = p.communicate(b"input data that is passed to subprocess' stdin")
 
                 ##
 
