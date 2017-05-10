@@ -193,7 +193,7 @@ overflow8 = 256
 overflow9 = 512
 
 
-def checksum(hexStr, tipo):
+def checksum(hexStr, tipo, s):
     if (tipo == 'V'):
 
     # 0a operação: tornando os bytes (do valor a ser enviado) somáveis
@@ -201,7 +201,7 @@ def checksum(hexStr, tipo):
         int2 = int(hexStr[4] + hexStr[5], 16)
 
     # 1a operação: somando o frame byte a byte /55/aa/30/00/+int1+int2
-        soma = 303 + int1 + int2
+        soma = 303 + int1 + int2 + s
 
     # 2a operação: reduzindo a soma a único byte
 
@@ -241,23 +241,26 @@ def enviar():
 
             Vint = round(Vfloat*1000,0)  # solucionando problemas de arredondamento
 
-            if Vint > 65530:
-                if Vint > 150000:
-                    strV.set(150.00)
-                    mensagem.configure(text=" Valor Inválido.")
-                else:
-                    mensagem.configure(text="Valor Representável com 3 bytes")
+            if Vint > 150000:
+                strV.set(150.00)
+                mensagem.configure(text=" Valor Inválido.")
 
             else:
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
-                Vhex = fillin(Vhex, 6)
-                crc = checksum(Vhex, 'V')
+                if len(Vhex) < 7:
+                    Vhex = fillin(Vhex, 6)
+                    s = 0
+                else:
+                    s = int(Vhex[2])
+                    Vhex = Vhex[0:2] + Vhex[3:]
+
+                crc = checksum(Vhex, 'V', s)
                 crc = fillin(crc, 4)
                 mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
                 ##
 
-                p = Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
                 ##
 

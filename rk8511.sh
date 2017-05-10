@@ -22,7 +22,7 @@ fi
 
 # Envio de Dados para à Carga
 
-frame="\x55\xaa\x30\xMODO\x00\x00\xA\xB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xC"
+frame="\x55\xaa\x30\xMODO\x00\x0s\xA\xB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xC"
 
 if [ "$2" = "TX" ]; then
 
@@ -37,9 +37,12 @@ if [ "$2" = "TX" ]; then
     CRC="$5"
     CRC=${CRC:2:2}
 
+    s="$6"
+
     frame=${frame/A/$BYTE1}
     frame=${frame/B/$BYTE2}
     frame=${frame/C/$CRC}
+    frame=${frame/s/$s}
 
     if [ "$1" = "0" ]; then
         echo -e $frame > /dev/ttyUSB0
