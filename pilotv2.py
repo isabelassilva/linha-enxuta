@@ -226,6 +226,16 @@ def intTOhex(num):
     return hex(num)
 
 
+def particiona(hexstr):
+    if len(hexstr) < 7:
+        byte_2 = fillin(hexstr, 6)
+        s = 0
+    else:
+        s = int(hexstr[2])
+        byte_2 = hexstr[0:2] + hexstr[3:]
+    return byte_2, s
+
+
 def enviar():
     tipodado = radVar.get()
 
@@ -247,22 +257,14 @@ def enviar():
 
             else:
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
-                if len(Vhex) < 7:
-                    Vhex = fillin(Vhex, 6)
-                    s = 0
-                else:
-                    s = int(Vhex[2])
-                    Vhex = Vhex[0:2] + Vhex[3:]
+
+                Vhex, s = particiona(Vhex)
 
                 crc = checksum(Vhex, 'V', s)
                 crc = fillin(crc, 4)
                 mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
-                ##
-
-                p = Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-                ##
+                Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
             mensagem.configure(text=" Valor Inválido.")
