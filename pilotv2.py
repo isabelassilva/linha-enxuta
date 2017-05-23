@@ -280,6 +280,16 @@ def enviar():
 
             strI.set(Ifloat)
 
+            Iint = Ifloat * 10000
+
+            if Iint > 300000:
+                strI.set(30.00)
+                mensagem.configure(text=" Valor Inválido.")
+
+            else:
+                Ihex = intTOhex(Iint)  # Retorna variável do tipo str
+                mensagem.configure(text="desejo enviar a tensão, " + str(Ifloat) + " , cujo HEX é " + Ihex)
+
         else:
             mensagem.configure(text=" Valor Inválido.")
 
