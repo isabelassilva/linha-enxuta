@@ -150,7 +150,8 @@ strV = tk.StringVar()
 Vcte = ttk.Entry(entradasModo,  textvariable=strV)
 Vcte.grid(column=refx+1,row=refy, sticky=tk.W)
 
-Icte = ttk.Entry(entradasModo)
+strI = tk.StringVar()
+Icte = ttk.Entry(entradasModo, textvariable=strI)
 Icte.grid(column=refx+1,row=refy+1, sticky=tk.W)
 
 Pcte = ttk.Entry(entradasModo)
@@ -269,8 +270,18 @@ def enviar():
         else:
             mensagem.configure(text=" Valor Inválido.")
 
-    elif tipodado == 1:
-        print("desejo enviar a corrente", Icte.get())
+    if tipodado == 1:
+        I = Icte.get()
+
+        if isnum(I):
+            mensagem.configure(text=" ")
+
+            Ifloat = truncate(float(I), 3)  # reduzindo o valor de I a três casas decimais
+
+            strI.set(Ifloat)
+
+        else:
+            mensagem.configure(text=" Valor Inválido.")
 
     elif tipodado == 2:
         print("desejo enviar a potência", Pcte.get())
