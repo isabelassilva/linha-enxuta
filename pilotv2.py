@@ -194,32 +194,33 @@ overflow8 = 256
 overflow9 = 512
 
 
-def checksum(hexStr, tipo, s):
-    if (tipo == 'V'):
+def checksum(hexStr, s, tipo):
 
-    # 0a operação: tornando os bytes (do valor a ser enviado) somáveis
-        int1 = int(hexStr[2] + hexStr[3], 16)
-        int2 = int(hexStr[4] + hexStr[5], 16)
+# 0a operação: tornando os bytes (do valor a ser enviado) somáveis
+    int1 = int(hexStr[2] + hexStr[3], 16)
+    int2 = int(hexStr[4] + hexStr[5], 16)
 
-    # 1a operação: somando o frame byte a byte /55/aa/30/00/+int1+int2
+    if tipo == 'V':    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
         soma = 303 + int1 + int2 + s
+    if tipo == 'I':    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
+        soma = 306 + int1 + int2 + s
 
-    # 2a operação: reduzindo a soma a único byte
+# 2a operação: reduzindo a soma a único byte
 
-        if soma > overflow9:
-            byte = soma - overflow9
+    if soma > overflow9:
+        byte = soma - overflow9
 
-            if byte > overflow8:
-                byte = byte - overflow8
+        if byte > overflow8:
+            byte = byte - overflow8
 
-        elif soma > overflow8:
-            byte = soma - overflow8
+    elif soma > overflow8:
+        byte = soma - overflow8
 
-    # 3a operação: complementando o byte (negando cada um dos bits)
-        byte_ = 255 - byte
+# 3a operação: complementando o byte (negando cada um dos bits)
+    byte_ = 255 - byte
 
-    # 4a operação: somando 1
-        return hex(byte_+1)
+# 4a operação: somando 1
+    return hex(byte_+1)
 
 
 def intTOhex(num):
@@ -260,9 +261,9 @@ def enviar():
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
 
                 Vhex, s = particiona(Vhex)
-
-                crc = checksum(Vhex, 'V', s)
+                crc = checksum(Vhex, s, 'V')
                 crc = fillin(crc, 4)
+
                 mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
                 Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -288,7 +289,11 @@ def enviar():
 
             else:
                 Ihex = intTOhex(Iint)  # Retorna variável do tipo str
-                mensagem.configure(text="desejo enviar a tensão, " + str(Ifloat) + " , cujo HEX é " + Ihex)
+
+                Ihex, s = particiona(Ihex)
+                crc = checksum(Ihex, s, 'I')
+
+                mensagem.configure(text="desejo enviar a tensão, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
 
         else:
             mensagem.configure(text=" Valor Inválido.")
