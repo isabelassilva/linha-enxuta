@@ -281,7 +281,7 @@ def enviar():
 
             strI.set(Ifloat)
 
-            Iint = Ifloat * 10000
+            Iint = round(Ifloat * 10000,0)
 
             if Iint > 300000:
                 strI.set(30.00)
@@ -293,7 +293,9 @@ def enviar():
                 Ihex, s = particiona(Ihex)
                 crc = checksum(Ihex, s, 'I')
 
-                mensagem.configure(text="desejo enviar a tensão, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
+                mensagem.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
+
+                Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
             mensagem.configure(text=" Valor Inválido.")
