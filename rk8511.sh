@@ -34,6 +34,10 @@ if [ "$2" = "TX" ]; then
         frame=${frame/MODO/03}
     fi
 
+    if [ "$3" = "P" ]; then
+        frame=${frame/MODO/07}
+    fi
+
     VALOR="$4"
     BYTE1=${VALOR:2:2}
     BYTE2=${VALOR:4:4}

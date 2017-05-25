@@ -154,7 +154,8 @@ strI = tk.StringVar()
 Icte = ttk.Entry(entradasModo, textvariable=strI)
 Icte.grid(column=refx+1,row=refy+1, sticky=tk.W)
 
-Pcte = ttk.Entry(entradasModo)
+strP = tk.StringVar()
+Pcte = ttk.Entry(entradasModo, textvariable=strP)
 Pcte.grid(column=refx+1,row=refy+2, sticky=tk.W)
 
 Rcte = ttk.Entry(entradasModo)
@@ -204,6 +205,8 @@ def checksum(hexStr, s, tipo):
         soma = 303 + int1 + int2 + s
     if tipo == 'I':    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
         soma = 306 + int1 + int2 + s
+    if tipo == 'P':  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
+        soma = 310 + int1 + int2 + s
 
 # 2a operação: reduzindo a soma a único byte
 
@@ -300,8 +303,34 @@ def enviar():
         else:
             mensagem.configure(text=" Valor Inválido.")
 
-    elif tipodado == 2:
-        print("desejo enviar a potência", Pcte.get())
+    if tipodado == 2:
+        P = Pcte.get()
+
+        if isnum(P):
+            mensagem.configure(text=" ")
+
+            Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a três casas decimais
+
+            strP.set(Pfloat)
+
+            Pint = round(Pfloat * 100,0)
+
+            if Pint > 15000:
+                strP.set(150.00)
+                mensagem.configure(text=" Valor Inválido.")
+
+            else:
+                Phex = intTOhex(Pint)  # Retorna variável do tipo str
+
+                Phex, s = particiona(Phex)
+                crc = checksum(Phex, s, 'P')
+
+                mensagem.configure(text="desejo enviar a corrente, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
+
+                Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
+        else:
+            mensagem.configure(text=" Valor Inválido.")
 
     elif tipodado == 3:
         print("desejo enviar a resistência", Rcte.get())
