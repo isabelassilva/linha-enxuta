@@ -297,7 +297,7 @@ def enviar():
 
                 mensagem.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
 
-                Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
             mensagem.configure(text=" Valor Inválido.")
@@ -308,7 +308,7 @@ def enviar():
         if isnum(P):
             mensagem.configure(text=" ")
 
-            Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a três casas decimais
+            Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a duas casas decimais
 
             strP.set(Pfloat)
 
@@ -324,9 +324,9 @@ def enviar():
                 Phex, s = particiona(Phex)
                 crc = checksum(Phex, s, 'P')
 
-                mensagem.configure(text="desejo enviar a corrente, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
+                mensagem.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
 
-                Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
             mensagem.configure(text=" Valor Inválido.")
