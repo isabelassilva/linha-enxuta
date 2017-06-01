@@ -202,11 +202,11 @@ def checksum(hexStr, s, tipo):
     int2 = int(hexStr[4] + hexStr[5], 16)
 
     if tipo == 'V':    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
-        soma = 303 + int1 + int2 + s
+        soma = 303 + int1 + int2 + int(s)
     if tipo == 'I':    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
-        soma = 306 + int1 + int2 + s
+        soma = 306 + int1 + int2 + int(s)
     if tipo == 'P':  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
-        soma = 310 + int1 + int2 + s
+        soma = 310 + int1 + int2 + int(s)
 
 # 2a operação: reduzindo a soma a único byte
 
@@ -234,9 +234,9 @@ def intTOhex(num):
 def particiona(hexstr):
     if len(hexstr) < 7:
         byte_2 = fillin(hexstr, 6)
-        s = 0
+        s = '0'
     else:
-        s = int(hexstr[2])
+        s = hexstr[2]
         byte_2 = hexstr[0:2] + hexstr[3:]
     return byte_2, s
 
@@ -265,11 +265,10 @@ def enviar():
 
                 Vhex, s = particiona(Vhex)
                 crc = checksum(Vhex, s, 'V')
-                crc = fillin(crc, 4)
 
                 mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
-                Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, str(s)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
             mensagem.configure(text=" Valor Inválido.")
