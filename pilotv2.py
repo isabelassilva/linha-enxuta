@@ -158,7 +158,8 @@ strP = tk.StringVar()
 Pcte = ttk.Entry(entradasModo, textvariable=strP)
 Pcte.grid(column=refx+1,row=refy+2, sticky=tk.W)
 
-Rcte = ttk.Entry(entradasModo)
+strR = tk.StringVar()
+Rcte = ttk.Entry(entradasModo, textvariable=strR)
 Rcte.grid(column=refx+1,row=refy+3, sticky=tk.W)
 
 for child in entradasModo.winfo_children():
@@ -207,6 +208,8 @@ def checksum(hexStr, s, tipo):
         soma = 306 + int1 + int2 + int(s)
     if tipo == 'P':  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
         soma = 310 + int1 + int2 + int(s)
+    if tipo == 'R':  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
+        soma = 312 + int1 + int2 + int(s, 16)
 
 # 2a operação: reduzindo a soma a único byte
 
@@ -235,6 +238,9 @@ def particiona(hexstr):
     if len(hexstr) < 7:
         byte_2 = fillin(hexstr, 6)
         s = '0'
+    elif len(hexstr) > 7:
+        s = hexstr[2] + hexstr[3]
+        byte_2 = hexstr[0:2] + hexstr[4:]
     else:
         s = hexstr[2]
         byte_2 = hexstr[0:2] + hexstr[3:]
@@ -331,9 +337,34 @@ def enviar():
         else:
             mensagem.configure(text=" Valor Inválido.")
 
-    elif tipodado == 3:
-        print("desejo enviar a resistência", Rcte.get())
+    if tipodado == 3:
+        R = Rcte.get()
 
+        if isnum(R):
+            mensagem.configure(text=" ")
+
+            Rfloat = truncate(float(R), 2)  # reduzindo o valor de I a três casas decimais
+
+            strR.set(Rfloat)
+
+            Rint = round(Rfloat * 100, 0)
+
+            if Rint > 9999999:
+                strR.set(99999.99)
+                mensagem.configure(text=" Valor Inválido.")
+
+            else:
+                Rhex = intTOhex(Rint)  # Retorna variável do tipo str
+
+                Rhex, s = particiona(Rhex)
+                crc = checksum(Rhex, s, 'R')
+
+                mensagem.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
+
+                Popen(["./rk8511.sh", com.get(), "TX", "R", Rhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
+        else:
+            mensagem.configure(text=" Valor Inválido.")
 
 ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 

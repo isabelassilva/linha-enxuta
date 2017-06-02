@@ -22,7 +22,7 @@ fi
 
 # Envio de Dados para à Carga
 
-frame="\x55\xaa\x30\xMODO\x00\x0s\xA\xB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xC"
+frame="\x55\xaa\x30\xMODO\x00\xs\xA\xB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xC"
 
 if [ "$2" = "TX" ]; then
 
@@ -36,6 +36,10 @@ if [ "$2" = "TX" ]; then
 
     if [ "$3" = "P" ]; then
         frame=${frame/MODO/07}
+    fi
+
+    if [ "$3" = "R" ]; then
+        frame=${frame/MODO/09}
     fi
 
     VALOR="$4"
