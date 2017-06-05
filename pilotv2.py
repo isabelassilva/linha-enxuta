@@ -74,7 +74,7 @@ from subprocess import Popen, PIPE
 def atualizar():
 
     if com.get() != ' ':
-        mensagem.configure(text=' ')
+        status.configure(text=' ')
 
         p = Popen(["./rk8511.sh", com.get(), "RX"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = p.communicate(b"input data that is passed to subprocess' stdin")
@@ -96,9 +96,9 @@ def atualizar():
             I.configure(text=Iint)
             R.configure(text=Rint)
         else:
-            mensagem.configure(text=" Falha de comunicaçao: Não foi possível acessar a PORTA.")
+            status.configure(text=" Falha de comunicaçao: Não foi possível acessar a PORTA.")
     else:
-        mensagem.configure(text=" Selecione a PORTA de comunicação.")
+        status.configure(text=" Selecione a PORTA de comunicação.")
 
 ttk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
 
@@ -270,7 +270,7 @@ def enviar():
         V = Vcte.get()
 
         if isnum(V):
-            mensagem.configure(text=" ")
+            status.configure(text=" ")
 
             Vfloat = truncate(float(V), 2)  # reduzindo o valor de V a duas casas decimais
 
@@ -280,7 +280,7 @@ def enviar():
 
             if Vint > 150000:
                 strV.set(150.00)
-                mensagem.configure(text=" Valor Inválido.")
+                status.configure(text=" Valor Inválido.")
 
             else:
                 Vhex = intTOhex(Vint)  # Retorna variável do tipo str
@@ -288,18 +288,18 @@ def enviar():
                 Vhex, s = particiona(Vhex)
                 crc = checksum(Vhex, s, 'V')
 
-                mensagem.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
+                status.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
                 Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
-            mensagem.configure(text=" Valor Inválido.")
+            status.configure(text=" Valor Inválido.")
 
     if tipodado == 1:
         I = Icte.get()
 
         if isnum(I):
-            mensagem.configure(text=" ")
+            status.configure(text=" ")
 
             Ifloat = truncate(float(I), 3)  # reduzindo o valor de I a três casas decimais
 
@@ -309,7 +309,7 @@ def enviar():
 
             if Iint > 300000:
                 strI.set(30.00)
-                mensagem.configure(text=" Valor Inválido.")
+                status.configure(text=" Valor Inválido.")
 
             else:
                 Ihex = intTOhex(Iint)  # Retorna variável do tipo str
@@ -317,18 +317,18 @@ def enviar():
                 Ihex, s = particiona(Ihex)
                 crc = checksum(Ihex, s, 'I')
 
-                mensagem.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
+                status.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
 
                 Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
-            mensagem.configure(text=" Valor Inválido.")
+            status.configure(text=" Valor Inválido.")
 
     if tipodado == 2:
         P = Pcte.get()
 
         if isnum(P):
-            mensagem.configure(text=" ")
+            status.configure(text=" ")
 
             Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a duas casas decimais
 
@@ -338,7 +338,7 @@ def enviar():
 
             if Pint > 15000:
                 strP.set(150.00)
-                mensagem.configure(text=" Valor Inválido.")
+                status.configure(text=" Valor Inválido.")
 
             else:
                 Phex = intTOhex(Pint)  # Retorna variável do tipo str
@@ -346,18 +346,18 @@ def enviar():
                 Phex, s = particiona(Phex)
                 crc = checksum(Phex, s, 'P')
 
-                mensagem.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
+                status.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
 
                 Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
-            mensagem.configure(text=" Valor Inválido.")
+            status.configure(text=" Valor Inválido.")
 
     if tipodado == 3:
         R = Rcte.get()
 
         if isnum(R):
-            mensagem.configure(text=" ")
+            status.configure(text=" ")
 
             Rfloat = truncate(float(R), 2)  # reduzindo o valor de I a três casas decimais
 
@@ -367,7 +367,7 @@ def enviar():
 
             if Rint > 9999999:
                 strR.set(99999.99)
-                mensagem.configure(text=" Valor Inválido.")
+                status.configure(text=" Valor Inválido.")
 
             else:
                 Rhex = intTOhex(Rint)  # Retorna variável do tipo str
@@ -375,18 +375,19 @@ def enviar():
                 Rhex, s = particiona(Rhex)
                 crc = checksum(Rhex, s, 'R')
 
-                mensagem.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
+                status.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
 
                 Popen(["./rk8511.sh", com.get(), "TX", "R", Rhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
         else:
-            mensagem.configure(text=" Valor Inválido.")
+            status.configure(text=" Valor Inválido.")
 
 ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 
 # StatusBar
 
-mensagem = ttk.Label(aba1, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
-mensagem.grid(column=0,row=9, columnspan=2, stick='WES')
+status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
+
+status.pack(side=tk.BOTTOM, fill=tk.X)
 
 win.mainloop()
