@@ -7,9 +7,25 @@ win = tk.Tk()
 
 win.title("Software RK8511")
 
+
+# Abas do Software
+
+ControleDeAbas = ttk.Notebook(win)
+
+aba1 = ttk.Frame(ControleDeAbas)
+
+ControleDeAbas.add(aba1, text="Modos Operacionais  ")
+
+ControleDeAbas.pack(expand=1, fill="both")
+
+aba2 = ttk.Frame(ControleDeAbas)
+
+ControleDeAbas.add(aba2, text="Teste Automático    ")
+
+
 #Frame de Aquisição de Dados
 
-interface = ttk.LabelFrame(win, text='Aquisição de Dados')
+interface = ttk.LabelFrame(aba1, text='Aquisição de Dados')
 
 interface.grid(column=0,row=0,padx=8,pady=4)
 
@@ -88,7 +104,7 @@ ttk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=ref
 
 #Frame de Seleção da Porta
 
-porta = ttk.LabelFrame(win, text='Porta')
+porta = ttk.LabelFrame(aba1, text='Porta')
 
 porta.grid(column=1,row=0,padx=8,pady=4)
 
@@ -102,7 +118,7 @@ com.current(0)
 
 #Frame de Modos Operacionais
 
-modo = ttk.LabelFrame(win, text='Modos Operacionais')
+modo = ttk.LabelFrame(aba1, text='Modos Operacionais')
 
 modo.grid(column=0,row=5, padx=8,pady=16)
 
@@ -370,7 +386,7 @@ ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, column
 
 # StatusBar
 
-mensagem = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
+mensagem = ttk.Label(aba1, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
 mensagem.grid(column=0,row=9, columnspan=2, stick='WES')
 
 win.mainloop()
