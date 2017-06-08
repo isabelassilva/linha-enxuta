@@ -16,16 +16,21 @@ aba1 = ttk.Frame(ControleDeAbas)
 
 ControleDeAbas.add(aba1, text="Modos Operacionais  ")
 
-ControleDeAbas.pack(expand=1, fill="both")
+ControleDeAbas.pack(fill="both")
 
 aba2 = ttk.Frame(ControleDeAbas)
 
 ControleDeAbas.add(aba2, text="Teste Automático    ")
 
+# Parte Fixa do Software
+
+partefixa = ttk.Frame(win)
+
+partefixa.pack()
 
 #Frame de Aquisição de Dados
 
-interface = ttk.LabelFrame(aba1, text='Aquisição de Dados')
+interface = ttk.LabelFrame(partefixa, text='Aquisição de Dados')
 
 interface.grid(column=0,row=0,padx=8,pady=4)
 
@@ -104,7 +109,7 @@ ttk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=ref
 
 #Frame de Seleção da Porta
 
-porta = ttk.LabelFrame(aba1, text='Porta')
+porta = ttk.LabelFrame(partefixa, text='Porta')
 
 porta.grid(column=1,row=0,padx=8,pady=4)
 
