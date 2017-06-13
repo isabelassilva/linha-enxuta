@@ -121,6 +121,8 @@ com.grid(column=1,row=1,padx=8,pady=16)
 
 com.current(0)
 
+#Aba1 :: Modos Operacionais
+
 #Frame de Modos Operacionais
 
 modo = ttk.LabelFrame(aba1, text='Modos Operacionais')
@@ -395,4 +397,118 @@ status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, rel
 
 status.pack(side=tk.BOTTOM, fill=tk.X)
 
+
+#Aba2 :: Teste Automático
+
+#conf_valores = ttk.LabelFrame(aba2, text='Configuração de Valores')
+conf_valores = ttk.Label(aba2)
+conf_valores.grid(column=0,row=5, padx=32,pady=16)
+
+# Coluna PASSOS
+
+PASSOS = 10
+colPw = 6       # largura da coluna PASSO
+colP = 1
+titleRow = 0      #linha dos títulos
+p=ttk.Label(conf_valores, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, wraplength=60)
+p.grid(column=colP, row=titleRow)
+
+for n in range(1, PASSOS+1):
+    ttk.Label(conf_valores, text=n,relief='raised', width=colPw, anchor=tk.CENTER).grid(column=colP, row=titleRow+n)
+
+# Coluna TIPO DE TESTE (MODO)
+
+colMw = 11      # largura da coluna MODO
+colM = colP+1
+ttk.Label(conf_valores, text='MODO', relief='raised', width=colMw+2, anchor=tk.CENTER).grid(column=colM, row=titleRow)
+
+#mode = tk.StringVar()
+
+for n in range(1, PASSOS+1):
+    modeOptions = 'modeOptions'+str(n)   #eventualmente comentar
+    modeOptions = ttk.Combobox(conf_valores, width=colMw, state='readonly', )#, textvariable=mode[n])
+
+    modeOptions.grid(column=colM,row=titleRow+n)
+
+    modeOptions['values'] = (' ',
+                             'V Constante',
+                             'I Constante',
+                             'P Constante',
+                             'R Constante',
+                             'Aberto',
+                             'Curto-Circuito')
+
+    modeOptions.current(0)
+
+# Coluna VALOR
+colVw=7 # largura da coluna VALOR
+colV=colM+1
+ttk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER).grid(column=colV, row=titleRow)
+
+for n in range(1, PASSOS+1):
+    name = tk.StringVar()
+    nameEntered = ttk.Entry(conf_valores, width=colVw, textvariable=name)
+    nameEntered.grid(column=colV, row=titleRow+n)
+    nameEntered.focus()
+
+# Coluna TEMPO
+colTw=7 # largura da coluna TEMPO
+colT=colV+1
+ttk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER).grid(column=colT, row=titleRow)
+
+for n in range(1, PASSOS+1):
+    name = tk.StringVar()
+    nameEntered = ttk.Entry(conf_valores, width=colTw, textvariable=name)
+    nameEntered.grid(column=colT, row=titleRow+n)
+    nameEntered.focus()
+
+# Coluna TIPO DE COMPARAÇÃO
+colCw=11 # largura da coluna
+colC=colT+1
+ttk.Label(conf_valores, text='COMPARAÇÃO', relief='raised', width=colCw+2, anchor=tk.CENTER).grid(column=colC, row=titleRow)
+
+#mode = tk.StringVar()
+
+for n in range(1, PASSOS+1):
+    testOptions = 'testOptions'+str(n)   #eventualmente comentar
+    testOptions = ttk.Combobox(conf_valores, width=colCw, state='readonly')#, textvariable=mode[n])
+
+    testOptions.grid(column=colC,row=titleRow+n)
+
+    testOptions['values'] = (' ',
+                             'Tensão',
+                             'Corrente',
+                             'Potencia',
+                             'Resistencia')
+
+    testOptions.current(0)
+
+# Coluna VALOR MÍNIMO
+colVMINw=9 # largura da coluna VALOR
+colVMIN=colC+1
+ttk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=60).grid(column=colVMIN, row=titleRow)
+
+for n in range(1, PASSOS+1):
+    name = tk.StringVar()
+    nameEntered = ttk.Entry(conf_valores, width=colVMINw, textvariable=name)
+    nameEntered.grid(column=colVMIN, row=titleRow+n)
+    nameEntered.focus()
+
+# Coluna VALOR MÁXIMO
+colVMAXw=9 # largura da coluna VALOR
+colVMAX=colVMIN+1
+ttk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw,anchor=tk.CENTER, wraplength=60).grid(column=colVMAX, row=titleRow)
+
+for n in range(1, PASSOS+1):
+    name = tk.StringVar()
+    nameEntered = ttk.Entry(conf_valores, width=colVMAXw, textvariable=name)
+    nameEntered.grid(column=colVMAX, row=titleRow+n)
+    nameEntered.focus()
+
+#for child in conf_valores.winfo_children():
+#    child.grid_configure(padx=1)
+
+
 win.mainloop()
+
+
