@@ -7,6 +7,7 @@ win = tk.Tk()
 
 win.title("Software RK8511")
 
+win.attributes('-zoomed', True)
 
 # Abas do Software
 
@@ -38,26 +39,28 @@ interface.grid(column=0,row=0,padx=8,pady=4)
 
 refx = 0
 refy = 0
+fontsize=30
+f = ("Times News Roman",fontsize)
 
-ttk.Label(interface, text='Tensão (V):').grid(column=refx,row=refy,sticky='W')
-ttk.Label(interface, text='Potência (W):').grid(column=refx,row=refy+1,sticky='W')
-ttk.Label(interface, text='Corrente (A):').grid(column=refx+2,row=refy,sticky='W')
-ttk.Label(interface, text='Resistência (ohm):').grid(column=refx+2,row=refy+1,sticky='W')
+ttk.Label(interface, text='Tensão (V):', font=f).grid(column=refx,row=refy,sticky='W')
+ttk.Label(interface, text='Potência (W):', font=f).grid(column=refx,row=refy+1,sticky='W')
+ttk.Label(interface, text='Corrente (A):', font=f).grid(column=refx+2,row=refy,sticky='W')
+ttk.Label(interface, text='Resistência (ohm):', font=f).grid(column=refx+2,row=refy+1,sticky='W')
 
 # Labels Dinâmicos
 
-w=10
+w=8
 
-V = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2)
+V = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
 V.grid(column=refx+1,row=refy,sticky='W')
 
-W = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2)
+W = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
 W.grid(column=refx+1,row=refy+1,sticky='W')
 
-I = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2)
+I = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
 I.grid(column=refx+3,row=refy,sticky='W')
 
-R = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2)
+R = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
 R.grid(column=refx+3,row=refy+1,sticky='W')
 
 for child in interface.winfo_children():
@@ -105,7 +108,10 @@ def atualizar():
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
-ttk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
+ttk.Style().configure('my.TButton', font=f)
+
+ttk.Button(interface, text="Atualizar", style='my.TButton', command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
+
 
 #Frame de Seleção da Porta
 
