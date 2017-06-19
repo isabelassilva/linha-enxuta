@@ -17,7 +17,7 @@ aba1 = ttk.Frame(ControleDeAbas)
 
 ControleDeAbas.add(aba1, text="Modos Operacionais  ")
 
-ControleDeAbas.pack(fill="both")
+ControleDeAbas.pack(fill="both", expand=1)
 
 aba2 = ttk.Frame(ControleDeAbas)
 
@@ -26,8 +26,6 @@ ControleDeAbas.add(aba2, text="Teste Automático    ")
 # Parte Fixa do Software
 
 partefixa = ttk.Frame(win)
-
-partefixa.pack()
 
 #Frame de Aquisição de Dados
 
@@ -131,9 +129,9 @@ com.current(0)
 
 #Frame de Modos Operacionais
 
-modo = ttk.LabelFrame(aba1, text='Modos Operacionais')
+modo = ttk.Frame(aba1)
 
-modo.grid(column=0,row=5, padx=8,pady=16)
+modo.pack(side=tk.BOTTOM, expand=1)
 
 modos = ["Tensão Constante",
          "Corrente Constante",
@@ -167,7 +165,7 @@ def radCall():
 
 
 for row in range(len(modos)):
-    tk.Radiobutton(modo, text=modos[row], variable=radVar, value=row, command=radCall).grid(column=refx, row=row, sticky=tk.W)
+    tk.Radiobutton(modo, text=modos[row], variable=radVar, value=row, command=radCall, font=f).grid(column=refx, row=row, sticky=tk.W)
 
 # Entradas
 
@@ -176,19 +174,19 @@ entradasModo = ttk.Label(modo)
 entradasModo.grid(column=refx+1,row=refy, rowspan=len(modos))
 
 strV = tk.StringVar()
-Vcte = ttk.Entry(entradasModo,  textvariable=strV)
+Vcte = ttk.Entry(entradasModo,  textvariable=strV, font=f)
 Vcte.grid(column=refx+1,row=refy, sticky=tk.W)
 
 strI = tk.StringVar()
-Icte = ttk.Entry(entradasModo, textvariable=strI)
+Icte = ttk.Entry(entradasModo, textvariable=strI, font=f)
 Icte.grid(column=refx+1,row=refy+1, sticky=tk.W)
 
 strP = tk.StringVar()
-Pcte = ttk.Entry(entradasModo, textvariable=strP)
+Pcte = ttk.Entry(entradasModo, textvariable=strP, font=f)
 Pcte.grid(column=refx+1,row=refy+2, sticky=tk.W)
 
 strR = tk.StringVar()
-Rcte = ttk.Entry(entradasModo, textvariable=strR)
+Rcte = ttk.Entry(entradasModo, textvariable=strR, font=f)
 Rcte.grid(column=refx+1,row=refy+3, sticky=tk.W)
 
 for child in entradasModo.winfo_children():
@@ -395,13 +393,15 @@ def enviar():
         else:
             status.configure(text=" Valor Inválido.")
 
-ttk.Button(modo, text="Enviar", command=enviar).grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
+ttk.Button(modo, text="Enviar", command=enviar, style='my.TButton').grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 
 # StatusBar
 
 status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
 
 status.pack(side=tk.BOTTOM, fill=tk.X)
+
+partefixa.pack(side=tk.BOTTOM, expand=1)
 
 
 #Aba2 :: Teste Automático
