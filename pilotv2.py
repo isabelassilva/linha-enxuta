@@ -1,4 +1,6 @@
 
+#region :: Configurações da Janela Principal
+
 import tkinter as tk
 
 from tkinter import ttk
@@ -28,6 +30,8 @@ ControleDeAbas.add(aba2, text="Teste Automático    ")
 fontsize = 30
 f = ("Times News Roman", fontsize)
 g = ("Times News Roman", fontsize-10)
+
+#endregion
 
 #region Parte Comum :: Aquisição de Dados
 
@@ -418,7 +422,7 @@ partefixa.pack(side=tk.BOTTOM, expand=1)
 conf_valores = ttk.Frame(aba2)
 conf_valores.pack(expand=1)
 
-# Coluna PASSOS
+#region Coluna PASSOS
 
 PASSOS = 7
 colPw = 6       # largura da coluna PASSO
@@ -429,7 +433,9 @@ tk.Label(conf_valores, text='PASSO', relief='raised', width=colPw, anchor=tk.CEN
 for n in range(1, PASSOS+1):
     tk.Label(conf_valores, text=n, relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2).grid(column=colP, row=titleRow+n)
 
-# Coluna TIPO DE TESTE (MODO)
+#endregion
+
+#region Coluna TIPO DE TESTE (MODO)
 
 colMw = 11      # largura da coluna MODO
 colM = colP+1
@@ -458,7 +464,9 @@ for n in range(1, PASSOS+1):
 
     modeOptions.current(0)
 
-# Coluna VALOR
+#endregion
+
+#region Coluna VALOR
 colVw = 7       # largura da coluna VALOR
 colV = colM+1
 tk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
@@ -469,7 +477,9 @@ for n in range(1, PASSOS+1):
     nameEntered.grid(column=colV, row=titleRow+n)
     nameEntered.focus()
 
-# Coluna TEMPO
+#endregion
+
+#region Coluna TEMPO
 colTw = 7       # largura da coluna TEMPO
 colT = colV+1
 tk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colT, row=titleRow)
@@ -480,7 +490,9 @@ for n in range(1, PASSOS+1):
     nameEntered.grid(column=colT, row=titleRow+n)
     nameEntered.focus()
 
-# Coluna TIPO DE COMPARAÇÃO
+#endregion
+
+#region Coluna TIPO DE COMPARAÇÃO
 colCw = 11      # largura da coluna
 colC = colT+1
 tk.Label(conf_valores, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
@@ -501,7 +513,9 @@ for n in range(1, PASSOS+1):
 
     testOptions.current(0)
 
-# Coluna VALOR MÍNIMO
+#endregion
+
+#region Coluna VALOR MÍNIMO
 colVMINw = 7        # largura da coluna VALOR
 colVMIN = colC+1
 tk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
@@ -512,7 +526,9 @@ for n in range(1, PASSOS+1):
     nameEntered.grid(column=colVMIN, row=titleRow+n)
     nameEntered.focus()
 
-# Coluna VALOR MÁXIMO
+#endregion
+
+#region Coluna VALOR MÁXIMO
 colVMAXw = 7        # largura da coluna VALOR
 colVMAX = colVMIN+1
 tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw,anchor=tk.CENTER, wraplength=120, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
@@ -522,6 +538,8 @@ for n in range(1, PASSOS+1):
     nameEntered = ttk.Entry(conf_valores, width=colVMAXw, textvariable=name, font=g)
     nameEntered.grid(column=colVMAX, row=titleRow+n)
     nameEntered.focus()
+
+#endregion
 
 #endregion
 
