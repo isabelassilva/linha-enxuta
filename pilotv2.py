@@ -415,8 +415,7 @@ partefixa.pack(side=tk.BOTTOM, expand=1)
 
 #region Aba2 :: Teste Automático
 
-#conf_valores = ttk.LabelFrame(aba2, text='Configuração de Valores')
-conf_valores = ttk.Label(aba2)
+conf_valores = ttk.Frame(aba2)
 conf_valores.pack(expand=1)
 
 # Coluna PASSOS
@@ -424,7 +423,7 @@ conf_valores.pack(expand=1)
 PASSOS = 7
 colPw = 6       # largura da coluna PASSO
 colP = 1
-titleRow = 0      #linha dos títulos
+titleRow = 0      # linha dos títulos
 tk.Label(conf_valores, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colP, row=titleRow)
 
 for n in range(1, PASSOS+1):
@@ -460,8 +459,8 @@ for n in range(1, PASSOS+1):
     modeOptions.current(0)
 
 # Coluna VALOR
-colVw=7 # largura da coluna VALOR
-colV=colM+1
+colVw = 7       # largura da coluna VALOR
+colV = colM+1
 tk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
 
 for n in range(1, PASSOS+1):
@@ -471,8 +470,8 @@ for n in range(1, PASSOS+1):
     nameEntered.focus()
 
 # Coluna TEMPO
-colTw=7 # largura da coluna TEMPO
-colT=colV+1
+colTw = 7       # largura da coluna TEMPO
+colT = colV+1
 tk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colT, row=titleRow)
 
 for n in range(1, PASSOS+1):
@@ -482,8 +481,8 @@ for n in range(1, PASSOS+1):
     nameEntered.focus()
 
 # Coluna TIPO DE COMPARAÇÃO
-colCw=11 # largura da coluna
-colC=colT+1
+colCw = 11      # largura da coluna
+colC = colT+1
 tk.Label(conf_valores, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
 
 #mode = tk.StringVar()
@@ -501,10 +500,10 @@ for n in range(1, PASSOS+1):
                              'Resistencia')
 
     testOptions.current(0)
-1
+
 # Coluna VALOR MÍNIMO
-colVMINw=7 # largura da coluna VALOR
-colVMIN=colC+1
+colVMINw = 7        # largura da coluna VALOR
+colVMIN = colC+1
 tk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
 
 for n in range(1, PASSOS+1):
@@ -514,8 +513,8 @@ for n in range(1, PASSOS+1):
     nameEntered.focus()
 
 # Coluna VALOR MÁXIMO
-colVMAXw=7 # largura da coluna VALOR
-colVMAX=colVMIN+1
+colVMAXw = 7        # largura da coluna VALOR
+colVMAX = colVMIN+1
 tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw,anchor=tk.CENTER, wraplength=120, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
 
 for n in range(1, PASSOS+1):
