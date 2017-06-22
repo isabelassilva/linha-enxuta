@@ -139,11 +139,13 @@ com.current(0)
 
 #region Aba1 :: Modos Operacionais
 
-#Frame de Modos Operacionais
+#region Frame de Modos Operacionais
 
 modo = ttk.Frame(aba1)
 
 modo.pack(side=tk.BOTTOM, expand=1)
+
+#region RadioButtons
 
 modos = ["Tensão Constante",
          "Corrente Constante",
@@ -151,10 +153,8 @@ modos = ["Tensão Constante",
          "Resistência Constante"]
 
 radVar = tk.IntVar()
-
 radVar.set(99)
 
-# Radiobutton callback function
 def radCall():
     radSel = radVar.get()
 
@@ -179,7 +179,9 @@ def radCall():
 for row in range(len(modos)):
     tk.Radiobutton(modo, text=modos[row], variable=radVar, value=row, command=radCall, font=f).grid(column=refx, row=row, sticky=tk.W)
 
-# Entradas
+#endregion
+
+#region Frame de entradas
 
 entradasModo = ttk.Label(modo)
 
@@ -205,8 +207,9 @@ for child in entradasModo.winfo_children():
     child.grid_configure(padx=10,pady=6)
     child.configure(state='disabled', width=8)
 
+#endregion
 
-# Botão "Enviar"
+#region Funcionalidade do Botão "Enviar"
 
 
 def isnum(str):
@@ -407,15 +410,19 @@ def enviar():
 
 ttk.Button(modo, text="Enviar", command=enviar, style='my.TButton').grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
 
-# StatusBar
+#endregion
+
+#endregion
+
+#region :: StatusBar
 
 status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
 
 status.pack(side=tk.BOTTOM, fill=tk.X)
 
-partefixa.pack(side=tk.BOTTOM, expand=1)
-
 #endregion
+
+partefixa.pack(side=tk.BOTTOM, expand=1)
 
 #region Aba2 :: Teste Automático
 
