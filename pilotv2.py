@@ -419,6 +419,8 @@ partefixa.pack(side=tk.BOTTOM, expand=1)
 
 #region Aba2 :: Teste Automático
 
+#region Frame de Configuração de Valores
+
 conf_valores = ttk.Frame(aba2)
 conf_valores.pack(expand=1)
 
@@ -538,6 +540,65 @@ for n in range(1, PASSOS+1):
     nameEntered = ttk.Entry(conf_valores, width=colVMAXw, textvariable=name, font=g)
     nameEntered.grid(column=colVMAX, row=titleRow+n)
     nameEntered.focus()
+
+#endregion
+
+#endregion
+
+#region Frame de Configuração de Parâmetros
+
+conf_parametros = ttk.Frame(aba2)
+conf_parametros.pack(expand=1)
+
+#region Seleção de Passos
+
+ttk.Label(conf_parametros, text='PASSOS:', font=g).grid(column=refx, row=refy)
+
+passos = ttk.Combobox(conf_parametros, width=3, state='readonly', font=g)
+passos.grid(column=refx+1, row=refy)
+
+strDePassos = ""
+
+for n in range(1, PASSOS+1):
+    strDePassos += ' ' + str(n)
+
+passos['values'] = strDePassos
+
+passos.current(0)
+
+#endregion
+
+#region Seleção do Modo de Saída
+
+ttk.Label(conf_parametros, text='MODO DE SAÍDA:', font=g).grid(column=refx+2, row=refy)
+
+modo_saida = ttk.Combobox(conf_parametros, width=6, state='readonly', font=g)
+modo_saida.grid(column=refx+3, row=refy)
+
+modo_saida['values'] = ('Pulso',
+                        'Nível')
+
+modo_saida.current(0)
+
+#endregion
+
+#region Seleção do Modo do Trigger
+
+ttk.Label(conf_parametros, text='MODO DO TRIGGER:', font=g).grid(column=refx+4, row=refy)
+
+modo_trigger = ttk.Combobox(conf_parametros, width=14, state='readonly', font=g)
+modo_trigger.grid(column=refx+5, row=refy)
+
+modo_trigger['values'] = ('Desabilitado',
+                        'Teste Aprovado',
+                        'Teste Reprovado')
+
+modo_trigger.current(0)
+
+#endregion
+
+for child in conf_parametros.winfo_children():
+    child.grid_configure(padx=10)
 
 #endregion
 
