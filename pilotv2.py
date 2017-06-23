@@ -11,9 +11,21 @@ win.title("Software RK8511")
 
 win.attributes('-zoomed', True)
 
-# Abas do Software
+#endregion
 
-ControleDeAbas = ttk.Notebook(win)
+#region Frame Top
+
+top = ttk.Frame(win)
+top.pack(fill='both', expand=1)
+
+#region Frame Left
+
+left = ttk.Frame(top)
+left.pack(side=tk.LEFT, fill='both', expand=1)
+
+#region Frame de Abas
+
+ControleDeAbas = ttk.Notebook(left)
 
 aba1 = ttk.Frame(ControleDeAbas)
 
@@ -25,7 +37,9 @@ aba2 = ttk.Frame(ControleDeAbas)
 
 ControleDeAbas.add(aba2, text="Teste Automático    ")
 
-# Configuraçao de Fontes
+#endregion
+
+#region :: Configuraçao de Fontes
 
 fontsize = 30
 f = ("Times News Roman", fontsize)
@@ -35,15 +49,11 @@ g = ("Times News Roman", fontsize-10)
 
 #region Parte Comum :: Aquisição de Dados
 
-# Parte Fixa do Software
-
-partefixa = ttk.Frame(win)
-
 # Frame de Aquisição de Dados
 
-interface = ttk.LabelFrame(partefixa, text='Aquisição de Dados')
+interface = ttk.LabelFrame(left, text='Aquisição de Dados')
 
-interface.grid(column=0,row=0,padx=8,pady=4)
+interface.pack(side=tk.BOTTOM, expand=1)
 
 # Labels Estáticos
 
@@ -120,12 +130,20 @@ ttk.Style().configure('my.TButton', font=f)
 
 ttk.Button(interface, text="Atualizar", style='my.TButton', command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
 
+#endregion
 
-# Frame de Seleção da Porta
+#endregion
 
-porta = ttk.LabelFrame(partefixa, text='Porta')
+#region Frame de Botoes Comuns aos Modos e ao Teste Automático
 
-porta.grid(column=1,row=0,padx=8,pady=4)
+comum = tk.Label(top, text="Frame de Botoes Comuns", background='DeepSkyBlue2', width=40, height=20)
+comum.pack(side=tk.RIGHT, fill='both')
+
+#region Frame de Seleção da Porta
+
+porta = ttk.LabelFrame(comum, text='Porta')
+
+#porta.grid(column=1,row=0,padx=8,pady=4)
 
 com = ttk.Combobox(porta, width=6, state='readonly')
 
@@ -134,6 +152,11 @@ com['values']=(' ',0,1,2)
 com.grid(column=1,row=1,padx=8,pady=16)
 
 com.current(0)
+
+#endregion
+
+
+#endregion
 
 #endregion
 
@@ -414,15 +437,15 @@ ttk.Button(modo, text="Enviar", command=enviar, style='my.TButton').grid(column=
 
 #endregion
 
-#region :: StatusBar
+#endregion
+
+#region Parte Comum :: StatusBar
 
 status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
 
 status.pack(side=tk.BOTTOM, fill=tk.X)
 
 #endregion
-
-partefixa.pack(side=tk.BOTTOM, expand=1)
 
 #region Aba2 :: Teste Automático
 
