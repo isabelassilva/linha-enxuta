@@ -13,6 +13,14 @@ win.attributes('-zoomed', True)
 
 #endregion
 
+#region :: Configuraçao de Fontes
+
+fontsize = 30
+f = ("Times News Roman", fontsize)
+g = ("Times News Roman", fontsize-10)
+
+#endregion
+
 #region Frame Top
 
 top = ttk.Frame(win)
@@ -36,14 +44,6 @@ ControleDeAbas.pack(fill="both", expand=1)
 aba2 = ttk.Frame(ControleDeAbas)
 
 ControleDeAbas.add(aba2, text="Teste Automático    ")
-
-#endregion
-
-#region :: Configuraçao de Fontes
-
-fontsize = 30
-f = ("Times News Roman", fontsize)
-g = ("Times News Roman", fontsize-10)
 
 #endregion
 
@@ -126,9 +126,7 @@ def atualizar():
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
-ttk.Style().configure('my.TButton', font=f)
-
-ttk.Button(interface, text="Atualizar", style='my.TButton', command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
+tk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
 
 #endregion
 
@@ -136,25 +134,38 @@ ttk.Button(interface, text="Atualizar", style='my.TButton', command=atualizar).g
 
 #region Frame de Botoes Comuns aos Modos e ao Teste Automático
 
-comum = tk.Label(top, text="Frame de Botoes Comuns", background='DeepSkyBlue2', width=40, height=20)
+comum = tk.Label(top, relief='flat', bd=1)
 comum.pack(side=tk.RIGHT, fill='both')
 
 #region Frame de Seleção da Porta
 
 porta = ttk.LabelFrame(comum, text='Porta')
 
-#porta.grid(column=1,row=0,padx=8,pady=4)
+porta.grid(column=refx,row=refy,padx=38,pady=34)
 
 com = ttk.Combobox(porta, width=6, state='readonly')
 
 com['values']=(' ',0,1,2)
 
-com.grid(column=1,row=1,padx=8,pady=16)
+com.grid(column=refx,row=refy,padx=8,pady=16)
 
 com.current(0)
 
 #endregion
 
+#region Seção "Em qual Aba estou"
+l = ttk.Label(comum, text="a Aba que estou é")
+l.grid(column=refx, row=refy+2)
+
+def func():
+    aba = ControleDeAbas.index(ControleDeAbas.select())
+    l.configure(text=aba)
+
+ttk.Button(comum, text="Detector de Abas", command=func).grid(column=refx, row=refy+1, padx=8, pady=12)
+
+#endregion
+
+#end region
 
 #endregion
 
@@ -313,125 +324,130 @@ def particiona(hexstr):
 
 
 def enviar():
-    tipodado = radVar.get()
+    aba = ControleDeAbas.index(ControleDeAbas.select())
 
-    if tipodado == 0:
-        V = Vcte.get()
+    if aba == 0:
+        tipodado = radVar.get()
 
-        if isnum(V):
-            status.configure(text=" ")
+        if tipodado == 0:
+            V = Vcte.get()
 
-            Vfloat = truncate(float(V), 2)  # reduzindo o valor de V a duas casas decimais
+            if isnum(V):
+                status.configure(text=" ")
 
-            strV.set(Vfloat)
+                Vfloat = truncate(float(V), 2)  # reduzindo o valor de V a duas casas decimais
 
-            Vint = round(Vfloat*1000,0)  # solucionando problemas de arredondamento
+                strV.set(Vfloat)
 
-            if Vint > 150000:
-                strV.set(150.00)
-                status.configure(text=" Valor Inválido.")
+                Vint = round(Vfloat*1000,0)  # solucionando problemas de arredondamento
 
-            else:
-                Vhex = intTOhex(Vint)  # Retorna variável do tipo str
+                if Vint > 150000:
+                    strV.set(150.00)
+                    status.configure(text=" Valor Inválido.")
 
-                Vhex, s = particiona(Vhex)
-                crc = checksum(Vhex, s, 'V')
+                else:
+                    Vhex = intTOhex(Vint)  # Retorna variável do tipo str
 
-                status.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
+                    Vhex, s = particiona(Vhex)
+                    crc = checksum(Vhex, s, 'V')
 
-                Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                    status.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
-        else:
-            status.configure(text=" Valor Inválido.")
-
-    if tipodado == 1:
-        I = Icte.get()
-
-        if isnum(I):
-            status.configure(text=" ")
-
-            Ifloat = truncate(float(I), 3)  # reduzindo o valor de I a três casas decimais
-
-            strI.set(Ifloat)
-
-            Iint = round(Ifloat * 10000,0)
-
-            if Iint > 300000:
-                strI.set(30.00)
-                status.configure(text=" Valor Inválido.")
+                    Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
             else:
-                Ihex = intTOhex(Iint)  # Retorna variável do tipo str
-
-                Ihex, s = particiona(Ihex)
-                crc = checksum(Ihex, s, 'I')
-
-                status.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
-
-                Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-        else:
-            status.configure(text=" Valor Inválido.")
-
-    if tipodado == 2:
-        P = Pcte.get()
-
-        if isnum(P):
-            status.configure(text=" ")
-
-            Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a duas casas decimais
-
-            strP.set(Pfloat)
-
-            Pint = round(Pfloat * 100,0)
-
-            if Pint > 15000:
-                strP.set(150.00)
                 status.configure(text=" Valor Inválido.")
 
+        if tipodado == 1:
+            I = Icte.get()
+
+            if isnum(I):
+                status.configure(text=" ")
+
+                Ifloat = truncate(float(I), 3)  # reduzindo o valor de I a três casas decimais
+
+                strI.set(Ifloat)
+
+                Iint = round(Ifloat * 10000,0)
+
+                if Iint > 300000:
+                    strI.set(30.00)
+                    status.configure(text=" Valor Inválido.")
+
+                else:
+                    Ihex = intTOhex(Iint)  # Retorna variável do tipo str
+
+                    Ihex, s = particiona(Ihex)
+                    crc = checksum(Ihex, s, 'I')
+
+                    status.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
+
+                    Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
             else:
-                Phex = intTOhex(Pint)  # Retorna variável do tipo str
-
-                Phex, s = particiona(Phex)
-                crc = checksum(Phex, s, 'P')
-
-                status.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
-
-                Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-        else:
-            status.configure(text=" Valor Inválido.")
-
-    if tipodado == 3:
-        R = Rcte.get()
-
-        if isnum(R):
-            status.configure(text=" ")
-
-            Rfloat = truncate(float(R), 2)  # reduzindo o valor de I a três casas decimais
-
-            strR.set(Rfloat)
-
-            Rint = round(Rfloat * 100, 0)
-
-            if Rint > 9999999:
-                strR.set(99999.99)
                 status.configure(text=" Valor Inválido.")
 
+        if tipodado == 2:
+            P = Pcte.get()
+
+            if isnum(P):
+                status.configure(text=" ")
+
+                Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a duas casas decimais
+
+                strP.set(Pfloat)
+
+                Pint = round(Pfloat * 100,0)
+
+                if Pint > 15000:
+                    strP.set(150.00)
+                    status.configure(text=" Valor Inválido.")
+
+                else:
+                    Phex = intTOhex(Pint)  # Retorna variável do tipo str
+
+                    Phex, s = particiona(Phex)
+                    crc = checksum(Phex, s, 'P')
+
+                    status.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
+
+                    Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
             else:
-                Rhex = intTOhex(Rint)  # Retorna variável do tipo str
+                status.configure(text=" Valor Inválido.")
 
-                Rhex, s = particiona(Rhex)
-                crc = checksum(Rhex, s, 'R')
+        if tipodado == 3:
+            R = Rcte.get()
 
-                status.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
+            if isnum(R):
+                status.configure(text=" ")
 
-                Popen(["./rk8511.sh", com.get(), "TX", "R", Rhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                Rfloat = truncate(float(R), 2)  # reduzindo o valor de I a três casas decimais
 
-        else:
-            status.configure(text=" Valor Inválido.")
+                strR.set(Rfloat)
 
-ttk.Button(modo, text="Enviar", command=enviar, style='my.TButton').grid(column=0,row=refy+4, columnspan=2, padx=8,pady=12)
+                Rint = round(Rfloat * 100, 0)
+
+                if Rint > 9999999:
+                    strR.set(99999.99)
+                    status.configure(text=" Valor Inválido.")
+
+                else:
+                    Rhex = intTOhex(Rint)  # Retorna variável do tipo str
+
+                    Rhex, s = particiona(Rhex)
+                    crc = checksum(Rhex, s, 'R')
+
+                    status.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
+
+                    Popen(["./rk8511.sh", com.get(), "TX", "R", Rhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
+            else:
+                status.configure(text=" Valor Inválido.")
+    else:
+        status.configure(text="Enviar Valores do Modo Automático - ainda não implementado")
+
+tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
 
 #endregion
 
@@ -635,4 +651,3 @@ for child in conf_parametros.winfo_children():
 #endregion
 
 win.mainloop()
-
