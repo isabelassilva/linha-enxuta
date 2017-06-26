@@ -21,6 +21,13 @@ g = ("Times News Roman", fontsize-10)
 
 #endregion
 
+#region :: Style Configuring
+
+style = ttk.Style()
+style.theme_use('alt')
+
+#endregion
+
 #region Frame Top
 
 top = ttk.Frame(win)
@@ -172,8 +179,6 @@ ttk.Button(comum, text="Detector de Abas", command=func).grid(column=refx, row=r
 #endregion
 
 #region Aba1 :: Modos Operacionais
-
-#region Frame de Modos Operacionais
 
 modo = ttk.Frame(aba1)
 
@@ -453,8 +458,6 @@ tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised',
 
 #endregion
 
-#endregion
-
 #region Parte Comum :: StatusBar
 
 status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
@@ -489,18 +492,11 @@ colMw = 11      # largura da coluna MODO
 colM = colP+1
 tk.Label(conf_valores, text='MODO', relief='raised', width=colMw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colM, row=titleRow)
 
-#region :: Style Configuring
-
-style = ttk.Style()
-style.theme_use('alt')
-
-#endregion
+mode = []
 
 for n in range(1, PASSOS+1):
-    modeOptions = 'modeOptions'+str(n)   #eventualmente comentar
-    modeOptions = ttk.Combobox(conf_valores, width=colMw, state='readonly', font=g)#, textvariable=mode[n])
-
-    modeOptions.grid(column=colM,row=titleRow+n)
+    modeOptions = ttk.Combobox(conf_valores, width=colMw, state='readonly', font=g)
+    modeOptions.grid(column=colM, row=titleRow+n)
 
     modeOptions['values'] = (' ',
                              'V Constante',
@@ -512,6 +508,8 @@ for n in range(1, PASSOS+1):
 
     modeOptions.current(0)
 
+    mode.append(modeOptions)
+
 #endregion
 
 #region Coluna VALOR
@@ -519,11 +517,12 @@ colVw = 7       # largura da coluna VALOR
 colV = colM+1
 tk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
 
+value = []
+
 for n in range(1, PASSOS+1):
-    name = tk.StringVar()
-    nameEntered = ttk.Entry(conf_valores, width=colVw, textvariable=name, font=g)
-    nameEntered.grid(column=colV, row=titleRow+n)
-    nameEntered.focus()
+    ent = ttk.Entry(conf_valores, width=colVw, font=g)
+    ent.grid(column=colV, row=titleRow+n)
+    value.append(ent)
 
 #endregion
 
@@ -532,11 +531,12 @@ colTw = 7       # largura da coluna TEMPO
 colT = colV+1
 tk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colT, row=titleRow)
 
+time = []
+
 for n in range(1, PASSOS+1):
-    name = tk.StringVar()
-    nameEntered = ttk.Entry(conf_valores, width=colTw, textvariable=name, font=g)
-    nameEntered.grid(column=colT, row=titleRow+n)
-    nameEntered.focus()
+    ent = ttk.Entry(conf_valores, width=colTw, font=g)
+    ent.grid(column=colT, row=titleRow+n)
+    time.append(ent)
 
 #endregion
 
@@ -545,13 +545,12 @@ colCw = 11      # largura da coluna
 colC = colT+1
 tk.Label(conf_valores, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
 
-#mode = tk.StringVar()
+test = []
 
 for n in range(1, PASSOS+1):
-    testOptions = 'testOptions'+str(n)   #eventualmente comentar
-    testOptions = ttk.Combobox(conf_valores, width=colCw, state='readonly', font=g)#, textvariable=mode[n])
+    testOptions = ttk.Combobox(conf_valores, width=colCw, state='readonly', font=g)
 
-    testOptions.grid(column=colC,row=titleRow+n)
+    testOptions.grid(column=colC, row=titleRow+n)
 
     testOptions['values'] = (' ',
                              'Tensão',
@@ -561,31 +560,35 @@ for n in range(1, PASSOS+1):
 
     testOptions.current(0)
 
+    test.append(testOptions)
+
 #endregion
 
 #region Coluna VALOR MÍNIMO
-colVMINw = 7        # largura da coluna VALOR
+colVMINw = 7        # largura da coluna
 colVMIN = colC+1
 tk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
 
+minValue = []
+
 for n in range(1, PASSOS+1):
-    name = tk.StringVar()
-    nameEntered = ttk.Entry(conf_valores, width=colVMINw, textvariable=name, font=g)
-    nameEntered.grid(column=colVMIN, row=titleRow+n)
-    nameEntered.focus()
+    ent = ttk.Entry(conf_valores, width=colVMINw, font=g)
+    ent.grid(column=colVMIN, row=titleRow+n)
+    minValue.append(ent)
 
 #endregion
 
 #region Coluna VALOR MÁXIMO
-colVMAXw = 7        # largura da coluna VALOR
+colVMAXw = 7        # largura da coluna
 colVMAX = colVMIN+1
-tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw,anchor=tk.CENTER, wraplength=120, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
+tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
+
+maxValue = []
 
 for n in range(1, PASSOS+1):
-    name = tk.StringVar()
-    nameEntered = ttk.Entry(conf_valores, width=colVMAXw, textvariable=name, font=g)
-    nameEntered.grid(column=colVMAX, row=titleRow+n)
-    nameEntered.focus()
+    ent = ttk.Entry(conf_valores, width=colVMAXw, font=g)
+    ent.grid(column=colVMAX, row=titleRow+n)
+    maxValue.append(ent)
 
 #endregion
 
@@ -598,10 +601,30 @@ conf_parametros.pack(expand=1)
 
 #region Seleção de Passos
 
+
+def selectstep(none):
+    p = int(passos.get())
+    for n in range(0, p):
+        value[n].configure(state='enabled')
+        mode[n]['state'] = 'readonly'
+        time[n].configure(state='enabled')
+        test[n]['state'] = 'readonly'
+        minValue[n].configure(state='enabled')
+        maxValue[n].configure(state='enabled')
+    for n in range(p, PASSOS):
+        value[n].configure(state='disabled')
+        mode[n]['state'] = 'disabled'
+        time[n].configure(state='disabled')
+        test[n]['state'] = 'disabled'
+        minValue[n].configure(state='disabled')
+        maxValue[n].configure(state='disabled')
+
 ttk.Label(conf_parametros, text='PASSOS:', font=g).grid(column=refx, row=refy)
 
 passos = ttk.Combobox(conf_parametros, width=3, state='readonly', font=g)
 passos.grid(column=refx+1, row=refy)
+
+passos.bind("<<ComboboxSelected>>", selectstep)
 
 strDePassos = ""
 
