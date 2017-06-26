@@ -280,8 +280,9 @@ overflow9 = 512
 def checksum(hexStr, s, tipo):
 
 # 0a operação: tornando os bytes (do valor a ser enviado) somáveis
-    int1 = int(hexStr[2] + hexStr[3], 16)
-    int2 = int(hexStr[4] + hexStr[5], 16)
+    if tipo != 'TA':
+        int1 = int(hexStr[2] + hexStr[3], 16)
+        int2 = int(hexStr[4] + hexStr[5], 16)
 
     if tipo == 'V':    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
         soma = 303 + int1 + int2 + int(s)
@@ -291,6 +292,8 @@ def checksum(hexStr, s, tipo):
         soma = 310 + int1 + int2 + int(s)
     if tipo == 'R':  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
         soma = 312 + int1 + int2 + int(s, 16)
+    if tipo == 'TA':   # 1a operação: somando o frame byte a byte /55/aa/30/10/+s+int1+int2
+        soma = 319 + s
 
 # 2a operação: reduzindo a soma a único byte
 
@@ -450,7 +453,22 @@ def enviar():
             else:
                 status.configure(text=" Valor Inválido.")
     else:
-        status.configure(text="Enviar Valores do Modo Automático - ainda não implementado")
+        p = passos.get()
+
+        m = modo_saida.get()
+        m = 0 if m == 'Pulso' else 1
+
+        t = modo_trigger.get()
+        if t == 'Desabilitado':
+            t = 0
+        elif t == 'Teste Aprovado':
+            t = 1
+        else:
+            t = 2
+
+        crc = checksum(0, (int(p)-1)+m+t, 'TA')
+
+        status.configure(text='Desejo enviar ' + p + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
 
