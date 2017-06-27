@@ -26,35 +26,37 @@ frame="\x55\xaa\x30\xMODO\x00\xs\xA\xB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x
 
 if [ "$2" = "TX" ]; then
 
-    if [ "$3" = "V" ]; then
-        frame=${frame/MODO/00}
-    fi
+    MODO="$3"
 
-    if [ "$3" = "I" ]; then
-        frame=${frame/MODO/03}
-    fi
-
-    if [ "$3" = "P" ]; then
-        frame=${frame/MODO/07}
-    fi
-
-    if [ "$3" = "R" ]; then
-        frame=${frame/MODO/09}
-    fi
-
-    VALOR="$4"
-    BYTE1=${VALOR:2:2}
-    BYTE2=${VALOR:4:4}
-
-    CRC="$5"
+    CRC="$7"
     CRC=${CRC:2:2}
 
-    s="$6"
-
-    frame=${frame/A/$BYTE1}
-    frame=${frame/B/$BYTE2}
+    frame=${frame/MODO/$MODO}
     frame=${frame/C/$CRC}
-    frame=${frame/s/$s}
+
+    if [ $MODO != "10" ]; then
+
+        s="$4"
+
+        VALOR="$5"
+        BYTE1=${VALOR:2:2}
+        BYTE2=${VALOR:4:4}
+
+        frame=${frame/s/$s}
+        frame=${frame/A/$BYTE1}
+        frame=${frame/B/$BYTE2}
+    fi
+
+    if [ $MODO = "10" ]; then
+
+        t="$4"
+        m="$5"
+        p="$6"
+
+        frame=${frame/s/$t}
+        frame=${frame/A/$m}
+        frame=${frame/B/$p}
+    fi
 
     if [ "$1" = "0" ]; then
         echo -e $frame > /dev/ttyUSB0

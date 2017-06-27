@@ -284,15 +284,16 @@ def checksum(hexStr, s, tipo):
         int1 = int(hexStr[2] + hexStr[3], 16)
         int2 = int(hexStr[4] + hexStr[5], 16)
 
-    if tipo == 'V':    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
-        soma = 303 + int1 + int2 + int(s)
-    if tipo == 'I':    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
-        soma = 306 + int1 + int2 + int(s)
-    if tipo == 'P':  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
-        soma = 310 + int1 + int2 + int(s)
-    if tipo == 'R':  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
-        soma = 312 + int1 + int2 + int(s, 16)
-    if tipo == 'TA':   # 1a operação: somando o frame byte a byte /55/aa/30/10/+s+int1+int2
+        if tipo == 'V':    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
+            soma = 303 + int1 + int2 + int(s)
+        if tipo == 'I':    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
+            soma = 306 + int1 + int2 + int(s)
+        if tipo == 'P':  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
+            soma = 310 + int1 + int2 + int(s)
+        if tipo == 'R':  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
+            soma = 312 + int1 + int2 + int(s, 16)
+
+    else:   # 1a operação: somando o frame byte a byte /55/aa/30/10/+s+int1+int2
         soma = 319 + s
 
 # 2a operação: reduzindo a soma a único byte
@@ -361,7 +362,7 @@ def enviar():
 
                     status.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
 
-                    Popen(["./rk8511.sh", com.get(), "TX", "V", Vhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                    Popen(["./rk8511.sh", com.get(), "TX", "00", s, Vhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
             else:
                 status.configure(text=" Valor Inválido.")
@@ -390,7 +391,7 @@ def enviar():
 
                     status.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
 
-                    Popen(["./rk8511.sh", com.get(), "TX", "I", Ihex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                    Popen(["./rk8511.sh", com.get(), "TX", "03", s, Ihex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
             else:
                 status.configure(text=" Valor Inválido.")
@@ -419,7 +420,7 @@ def enviar():
 
                     status.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
 
-                    Popen(["./rk8511.sh", com.get(), "TX", "P", Phex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                    Popen(["./rk8511.sh", com.get(), "TX", "07", s, Phex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
             else:
                 status.configure(text=" Valor Inválido.")
@@ -448,12 +449,12 @@ def enviar():
 
                     status.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
 
-                    Popen(["./rk8511.sh", com.get(), "TX", "R", Rhex, crc, s], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                    Popen(["./rk8511.sh", com.get(), "TX", "09", s, Rhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
             else:
                 status.configure(text=" Valor Inválido.")
     else:
-        p = passos.get()
+        p = int(passos.get())
 
         m = modo_saida.get()
         m = 0 if m == 'Pulso' else 1
@@ -466,9 +467,11 @@ def enviar():
         else:
             t = 2
 
-        crc = checksum(0, (int(p)-1)+m+t, 'TA')
+        crc = checksum(0, (p-1)+m+t, 'TA')
 
-        status.configure(text='Desejo enviar ' + p + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
+        status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
+
+        Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
 
