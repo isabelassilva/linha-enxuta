@@ -331,6 +331,9 @@ def particiona(hexstr):
         byte_2 = hexstr[0:2] + hexstr[3:]
     return byte_2, s
 
+
+#region Variáveis Auxiliares da Função sendX()
+
 Xcte = [Vcte, Icte, Pcte, Rcte]
 
 code = ['00', '03', '07', '09']
@@ -342,6 +345,8 @@ strX = [strV, strI, strP, strR]
 weight = [1000, 10000, 100, 100]
 
 upper_bound = [150000, 300000, 15000, 9999999]
+
+#endregion
 
 
 def sendX(x):    # vai entar 0, 1, 2 ou 3
@@ -400,8 +405,6 @@ def enviar():
         status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
         Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-
 
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
