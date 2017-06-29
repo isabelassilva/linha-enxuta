@@ -284,13 +284,13 @@ def checksum(hexStr, s, tipo):
         int1 = int(hexStr[2] + hexStr[3], 16)
         int2 = int(hexStr[4] + hexStr[5], 16)
 
-        if tipo == 'V':    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
+        if tipo == 0:    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
             soma = 303 + int1 + int2 + int(s)
-        if tipo == 'I':    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
+        if tipo == 1:    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
             soma = 306 + int1 + int2 + int(s)
-        if tipo == 'P':  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
+        if tipo == 2:  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
             soma = 310 + int1 + int2 + int(s)
-        if tipo == 'R':  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
+        if tipo == 3:  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
             soma = 312 + int1 + int2 + int(s, 16)
 
     else:   # 1a operação: somando o frame byte a byte /55/aa/30/10/+s+int1+int2
@@ -331,128 +331,56 @@ def particiona(hexstr):
         byte_2 = hexstr[0:2] + hexstr[3:]
     return byte_2, s
 
+Xcte = [Vcte, Icte, Pcte, Rcte]
+
+code = ['00', '03', '07', '09']
+
+decimal_size = [2, 3, 2, 2]
+
+strX = [strV, strI, strP, strR]
+
+weight = [1000, 10000, 100, 100]
+
+upper_bound = [150000, 300000, 15000, 9999999]
+
+
+def sendX(x):    # vai entar 0, 1, 2 ou 3
+    X = Xcte[x].get()
+
+    if isnum(X):
+        status.configure(text=" ")
+
+        Xfloat = truncate(float(X), decimal_size[x])
+
+        strX[x].set(Xfloat)
+
+        Xint = round(Xfloat*weight[x], 0)  # solucionando problemas de arredondamento
+
+        if Xint > upper_bound[x]:
+            strX[x].set(upper_bound[x]/weight[x])
+
+            status.configure(text=" Valor Inválido.")
+
+        else:
+            Xhex = intTOhex(Xint)  # Retorna variável do tipo str
+
+            Xhex, s = particiona(Xhex)
+
+            crc = checksum(Xhex, s, x)
+
+            status.configure(text="desejo enviar a tensão, " + str(Xfloat) + " , cujo CRC é " + crc)
+
+            Popen(["./rk8511.sh", com.get(), "TX", code[x], s, Xhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    else:
+        status.configure(text=" Valor Inválido.")
+
 
 def enviar():
     aba = ControleDeAbas.index(ControleDeAbas.select())
 
     if aba == 0:
-        tipodado = radVar.get()
+        sendX(radVar.get())
 
-        if tipodado == 0:
-            V = Vcte.get()
-
-            if isnum(V):
-                status.configure(text=" ")
-
-                Vfloat = truncate(float(V), 2)  # reduzindo o valor de V a duas casas decimais
-
-                strV.set(Vfloat)
-
-                Vint = round(Vfloat*1000,0)  # solucionando problemas de arredondamento
-
-                if Vint > 150000:
-                    strV.set(150.00)
-                    status.configure(text=" Valor Inválido.")
-
-                else:
-                    Vhex = intTOhex(Vint)  # Retorna variável do tipo str
-
-                    Vhex, s = particiona(Vhex)
-                    crc = checksum(Vhex, s, 'V')
-
-                    status.configure(text="desejo enviar a tensão, " + str(Vfloat) + " , cujo CRC é " + crc)
-
-                    Popen(["./rk8511.sh", com.get(), "TX", "00", s, Vhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-            else:
-                status.configure(text=" Valor Inválido.")
-
-        if tipodado == 1:
-            I = Icte.get()
-
-            if isnum(I):
-                status.configure(text=" ")
-
-                Ifloat = truncate(float(I), 3)  # reduzindo o valor de I a três casas decimais
-
-                strI.set(Ifloat)
-
-                Iint = round(Ifloat * 10000,0)
-
-                if Iint > 300000:
-                    strI.set(30.00)
-                    status.configure(text=" Valor Inválido.")
-
-                else:
-                    Ihex = intTOhex(Iint)  # Retorna variável do tipo str
-
-                    Ihex, s = particiona(Ihex)
-                    crc = checksum(Ihex, s, 'I')
-
-                    status.configure(text="desejo enviar a corrente, " + str(Ifloat) + " , cujo HEX é " + Ihex + " e cujo CRC é " + crc)
-
-                    Popen(["./rk8511.sh", com.get(), "TX", "03", s, Ihex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-            else:
-                status.configure(text=" Valor Inválido.")
-
-        if tipodado == 2:
-            P = Pcte.get()
-
-            if isnum(P):
-                status.configure(text=" ")
-
-                Pfloat = truncate(float(P), 2)  # reduzindo o valor de I a duas casas decimais
-
-                strP.set(Pfloat)
-
-                Pint = round(Pfloat * 100,0)
-
-                if Pint > 15000:
-                    strP.set(150.00)
-                    status.configure(text=" Valor Inválido.")
-
-                else:
-                    Phex = intTOhex(Pint)  # Retorna variável do tipo str
-
-                    Phex, s = particiona(Phex)
-                    crc = checksum(Phex, s, 'P')
-
-                    status.configure(text="desejo enviar a potência, " + str(Pfloat) + " , cujo HEX é " + Phex + " e cujo CRC é " + crc)
-
-                    Popen(["./rk8511.sh", com.get(), "TX", "07", s, Phex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-            else:
-                status.configure(text=" Valor Inválido.")
-
-        if tipodado == 3:
-            R = Rcte.get()
-
-            if isnum(R):
-                status.configure(text=" ")
-
-                Rfloat = truncate(float(R), 2)  # reduzindo o valor de I a três casas decimais
-
-                strR.set(Rfloat)
-
-                Rint = round(Rfloat * 100, 0)
-
-                if Rint > 9999999:
-                    strR.set(99999.99)
-                    status.configure(text=" Valor Inválido.")
-
-                else:
-                    Rhex = intTOhex(Rint)  # Retorna variável do tipo str
-
-                    Rhex, s = particiona(Rhex)
-                    crc = checksum(Rhex, s, 'R')
-
-                    status.configure(text="desejo enviar a resistência, " + str(Rfloat) + " , cujo HEX é " + Rhex + ", cujo CRC é " + crc + " e s =" + s)
-
-                    Popen(["./rk8511.sh", com.get(), "TX", "09", s, Rhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
-            else:
-                status.configure(text=" Valor Inválido.")
     else:
         p = int(passos.get())
 
@@ -472,6 +400,9 @@ def enviar():
         status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
         Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
+
+
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
 
