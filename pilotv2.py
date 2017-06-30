@@ -373,11 +373,44 @@ def sendX(x):    # vai entar 0, 1, 2 ou 3
 
             crc = checksum(Xhex, s, x)
 
-            status.configure(text="desejo enviar a tensão, " + str(Xfloat) + " , cujo CRC é " + crc)
+            status.configure(text="desejo enviar o valor, " + str(Xfloat) + " , cujo HEX é " + Xhex + ", cujo CRC é " + crc + " e s =" + s)
 
             Popen(["./rk8511.sh", com.get(), "TX", code[x], s, Xhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     else:
         status.configure(text=" Valor Inválido.")
+
+
+def sendValue(x, p):    # vai entar 0, 1, 2 ou 3
+    if x in [0,1,2,3]:
+        X = value[p].get()
+
+        if isnum(X):
+            status.configure(text=" ")
+
+            Xfloat = truncate(float(X), decimal_size[x])
+
+            valor[p].set(Xfloat)
+
+            Xint = round(Xfloat*weight[x], 0)  # solucionando problemas de arredondamento
+
+            if Xint > upper_bound[x]:
+                valor[p].set(upper_bound[x]/weight[x])
+
+                status.configure(text=" Valor Inválido.")
+
+                return 0, 0
+            else:
+                Xhex = intTOhex(Xint)  # Retorna variável do tipo str
+
+                Xhex, s = particiona(Xhex)
+
+                return Xhex, s
+        else:
+            status.configure(text=" Valor Inválido.")
+
+            return 0, 0
+    else:
+        return '0x0000', '0'
 
 
 def enviar():
@@ -387,6 +420,8 @@ def enviar():
         sendX(radVar.get())
 
     else:
+
+    #region Obteção dos parâmetros referentes ao FRAME0
         p = int(passos.get())
 
         m = modo_saida.get()
@@ -405,6 +440,26 @@ def enviar():
         status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
         Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    #endregion
+    # region Obteção dos parâmetros referentes ao FRAMEn
+        for n in range(0, PASSOS):
+            p = n + 1
+            p = hex(p)
+
+            m = mode[n].current()
+
+            x, s = sendValue(m, n)
+
+            if x != 0:
+                print("Passo: " + p[2:] + '\t Modo: ' + str(m) + '\t Valor: ' + s + x)
+            else:
+                break
+
+            if n == PASSOS:
+                pass    # só se n alcançar a formação de todos os passos, enviar
+
+        print()
+    #endregion
 
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
@@ -442,6 +497,15 @@ for n in range(1, PASSOS+1):
 #endregion
 
 #region Coluna TIPO DE TESTE (MODO)
+def valueTypeDefiner(none):
+    p = int(passos.get())
+
+    for n in range(0, p):
+        if (mode[n].current() == 4) or (mode[n].current() == 5):
+            valor[n].set('----')
+
+        elif not isnum(valor[n].get()):
+            valor[n].set('0.000')
 
 colMw = 11      # largura da coluna MODO
 colM = colP+1
@@ -453,8 +517,9 @@ for n in range(1, PASSOS+1):
     modeOptions = ttk.Combobox(conf_valores, width=colMw, state='readonly', font=g)
     modeOptions.grid(column=colM, row=titleRow+n)
 
-    modeOptions['values'] = (' ',
-                             'V Constante',
+    modeOptions.bind("<<ComboboxSelected>>", valueTypeDefiner)
+
+    modeOptions['values'] = ('V Constante',
                              'I Constante',
                              'P Constante',
                              'R Constante',
@@ -473,11 +538,17 @@ colV = colM+1
 tk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
 
 value = []
+valor = []
 
 for n in range(1, PASSOS+1):
-    ent = ttk.Entry(conf_valores, width=colVw, font=g)
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colVw, font=g, textvariable=e, justify='center')
     ent.grid(column=colV, row=titleRow+n)
+
     value.append(ent)
+    e.set('0.000')
+    valor.append(e)
 
 #endregion
 
@@ -588,7 +659,7 @@ for n in range(1, PASSOS+1):
 
 passos['values'] = strDePassos
 
-passos.current(0)
+passos.current(PASSOS-1)
 
 #endregion
 
