@@ -248,6 +248,8 @@ for child in entradasModo.winfo_children():
 
 #endregion
 
+#endregion
+
 #region Funcionalidade do Botão "Enviar"
 
 
@@ -380,7 +382,7 @@ def sendX(x):    # vai entar 0, 1, 2 ou 3
         status.configure(text=" Valor Inválido.")
 
 
-def sendValue(x, p):    # vai entar 0, 1, 2 ou 3
+def getValue(x, p):
     if x in [0,1,2,3]:
         X = value[p].get()
 
@@ -413,6 +415,38 @@ def sendValue(x, p):    # vai entar 0, 1, 2 ou 3
         return '0x0000', '0'
 
 
+def isint(num):
+    r = True if num == int(num) else False
+    return r
+
+
+maxTime = 255
+
+
+def getTime(p):
+    sec = time[p].get()
+
+    if isnum(sec):
+        status.configure(text=" ")
+        sec = float(sec)
+
+        if isint(sec):
+            if sec > maxTime:
+                tempo[p].set(maxTime)
+                status.configure(text=" Valor Inválido: O tempo deve ser no máximo 255 segundos")
+                return 0
+
+            else:
+                Xhex = intTOhex(sec)
+                return Xhex
+        else:
+            status.configure(text=" Valor Inválido: O tempo deve ser inteiro.")
+            return 0
+    else:
+        status.configure(text=" Valor Inválido.")
+        return 0
+
+
 def enviar():
     aba = ControleDeAbas.index(ControleDeAbas.select())
 
@@ -441,6 +475,7 @@ def enviar():
 
         Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     #endregion
+
     # region Obteção dos parâmetros referentes ao FRAMEn
         for n in range(0, PASSOS):
             p = n + 1
@@ -448,23 +483,26 @@ def enviar():
 
             m = mode[n].current()
 
-            x, s = sendValue(m, n)
+            x, s = getValue(m, n)
 
-            if x != 0:
-                print("Passo: " + p[2:] + '\t Modo: ' + str(m) + '\t Valor: ' + s + x)
+            t = getTime(n)
+
+            if (x != 0) and (t != 0):
+                print("Passo: " + p[2:] + '\t Modo: ' + str(m) + '\t Valor: ' + s + x + '\tTempo: ' + t)
             else:
+                print('Falha no passo ' + p)
                 break
 
             if n == PASSOS:
                 pass    # só se n alcançar a formação de todos os passos, enviar
 
         print()
+
+
     #endregion
 
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
-
-#endregion
 
 #endregion
 
@@ -558,11 +596,17 @@ colT = colV+1
 tk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colT, row=titleRow)
 
 time = []
+tempo = []
 
 for n in range(1, PASSOS+1):
-    ent = ttk.Entry(conf_valores, width=colTw, font=g)
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colTw, font=g, textvariable=e, justify='center')
     ent.grid(column=colT, row=titleRow+n)
+
     time.append(ent)
+    e.set('0')
+    tempo.append(e)
 
 #endregion
 
