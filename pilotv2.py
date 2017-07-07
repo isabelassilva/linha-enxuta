@@ -447,6 +447,65 @@ def getTime(p):
         return 0
 
 
+def minGetValue(x, p):
+    X = minValue[p].get()
+
+    if isnum(X):
+        status.configure(text=" ")
+
+        Xfloat = truncate(float(X), decimal_size[x])
+
+        valorMin[p].set(Xfloat)
+
+        Xint = round(Xfloat*weight[x], 0)  # solucionando problemas de arredondamento
+
+        if Xint > upper_bound[x]:
+            valorMin[p].set(upper_bound[x]/weight[x])
+
+            status.configure(text=" Valor Inválido.")
+
+            return 0, 0
+        else:
+            Xhex = intTOhex(Xint)  # Retorna variável do tipo str
+
+            Xhex, s = particiona(Xhex)
+
+            return Xhex, s
+    else:
+        status.configure(text=" Valor Inválido.")
+
+        return 0, 0
+
+
+def maxGetValue(x, p):
+    X = maxValue[p].get()
+
+    if isnum(X):
+        status.configure(text=" ")
+
+        Xfloat = truncate(float(X), decimal_size[x])
+
+        valorMax[p].set(Xfloat)
+
+        Xint = round(Xfloat*weight[x], 0)  # solucionando problemas de arredondamento
+
+        if Xint > upper_bound[x]:
+            valorMax[p].set(upper_bound[x]/weight[x])
+
+            status.configure(text=" Valor Inválido.")
+
+            return 0, 0
+        else:
+            Xhex = intTOhex(Xint)  # Retorna variável do tipo str
+
+            Xhex, s = particiona(Xhex)
+
+            return Xhex, s
+    else:
+        status.configure(text=" Valor Inválido.")
+
+        return 0, 0
+
 def enviar():
     aba = ControleDeAbas.index(ControleDeAbas.select())
 
@@ -487,8 +546,14 @@ def enviar():
 
             t = getTime(n)
 
-            if (x != 0) and (t != 0):
-                print("Passo: " + p[2:] + '\t Modo: ' + str(m) + '\t Valor: ' + s + x + '\tTempo: ' + t)
+            c = test[n].current()
+
+            xmin, smin = minGetValue(c, n)
+
+            xmax, smax = maxGetValue(c, n)
+
+            if (x != 0) and (t != 0) and (xmin != 0) and (xmax!=0):
+                print("Passo: " + p[2:] + '\tModo: ' + str(m) + '\tValor: ' + s + ' ' + x + '\tTempo: ' + t + '\tModo de Comparação: ' + str(c) + '\tValor Min: ' + smin + ' ' + xmin + '\tValor Max: ' + s + ' ' + xmax)
             else:
                 print('Falha no passo ' + p)
                 break
@@ -497,8 +562,6 @@ def enviar():
                 pass    # só se n alcançar a formação de todos os passos, enviar
 
         print()
-
-
     #endregion
 
 
@@ -622,8 +685,7 @@ for n in range(1, PASSOS+1):
 
     testOptions.grid(column=colC, row=titleRow+n)
 
-    testOptions['values'] = (' ',
-                             'Tensão',
+    testOptions['values'] = ('Tensão',
                              'Corrente',
                              'Potencia',
                              'Resistencia')
@@ -640,11 +702,17 @@ colVMIN = colC+1
 tk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
 
 minValue = []
+valorMin = []
 
 for n in range(1, PASSOS+1):
-    ent = ttk.Entry(conf_valores, width=colVMINw, font=g)
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colVMINw, font=g, textvariable=e, justify='center')
     ent.grid(column=colVMIN, row=titleRow+n)
+
     minValue.append(ent)
+    e.set('0.000')
+    valorMin.append(e)
 
 #endregion
 
@@ -654,11 +722,17 @@ colVMAX = colVMIN+1
 tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
 
 maxValue = []
+valorMax = []
 
 for n in range(1, PASSOS+1):
-    ent = ttk.Entry(conf_valores, width=colVMAXw, font=g)
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colVMAXw, font=g, textvariable=e, justify='center')
     ent.grid(column=colVMAX, row=titleRow+n)
+
     maxValue.append(ent)
+    e.set('0.000')
+    valorMax.append(e)
 
 #endregion
 
