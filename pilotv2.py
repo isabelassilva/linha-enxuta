@@ -506,6 +506,7 @@ def maxGetValue(x, p):
 
         return 0, 0
 
+
 def enviar():
     aba = ControleDeAbas.index(ControleDeAbas.select())
 
@@ -552,8 +553,9 @@ def enviar():
 
             xmax, smax = maxGetValue(c, n)
 
-            if (x != 0) and (t != 0) and (xmin != 0) and (xmax!=0):
-                print("Passo: " + p[2:] + '\tModo: ' + str(m) + '\tValor: ' + s + ' ' + x + '\tTempo: ' + t + '\tModo de Comparação: ' + str(c) + '\tValor Min: ' + smin + ' ' + xmin + '\tValor Max: ' + s + ' ' + xmax)
+            if (x != 0) and (t != 0) and (xmin != 0) and (xmax != 0):
+                print("Passo: " + p[2:] + '\tModo: ' + str(m) + '\tValor: ' + s + ' ' + x + '\tTempo: ' + t[2:] + '\tModo de Comparação: ' + str(c) + '\tValor Min: ' + smin + ' ' + xmin + '\tValor Max: ' + s + ' ' + xmax + ' e CRC: ' + crc[2:])
+                Popen(["./rk8511_.sh", com.get(), p[2:], str(m)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
                 print('Falha no passo ' + p)
                 break
