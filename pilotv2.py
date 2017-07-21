@@ -400,19 +400,19 @@ def getValue(x, p):
 
                 status.configure(text=" Valor Inválido.")
 
-                return 0, 0
+                return 0
             else:
                 Xhex = intTOhex(Xint)  # Retorna variável do tipo str
 
-                Xhex, s = particiona(Xhex)
+                Xhex = fillin(Xhex, 8)
 
-                return Xhex, s
+                return Xhex
         else:
             status.configure(text=" Valor Inválido.")
 
-            return 0, 0
+            return 0
     else:
-        return '0x0000', '0'
+        return '0x000000'
 
 
 def isint(num):
@@ -464,17 +464,17 @@ def minGetValue(x, p):
 
             status.configure(text=" Valor Inválido.")
 
-            return 0, 0
+            return 0
         else:
             Xhex = intTOhex(Xint)  # Retorna variável do tipo str
 
-            Xhex, s = particiona(Xhex)
+            Xhex = fillin(Xhex, 8)
 
-            return Xhex, s
+            return Xhex
     else:
         status.configure(text=" Valor Inválido.")
 
-        return 0, 0
+        return 0
 
 
 def maxGetValue(x, p):
@@ -494,17 +494,17 @@ def maxGetValue(x, p):
 
             status.configure(text=" Valor Inválido.")
 
-            return 0, 0
+            return 0
         else:
             Xhex = intTOhex(Xint)  # Retorna variável do tipo str
 
-            Xhex, s = particiona(Xhex)
+            Xhex = fillin(Xhex, 8)
 
-            return Xhex, s
+            return Xhex
     else:
         status.configure(text=" Valor Inválido.")
 
-        return 0, 0
+        return 0
 
 
 def enviar():
@@ -543,19 +543,20 @@ def enviar():
 
             m = mode[n].current()
 
-            x, s = getValue(m, n)
+            x = getValue(m, n)
 
             t = getTime(n)
 
             c = test[n].current()
 
-            xmin, smin = minGetValue(c, n)
+            xmin = minGetValue(c, n)
 
-            xmax, smax = maxGetValue(c, n)
+            xmax = maxGetValue(c, n)
 
             if (x != 0) and (t != 0) and (xmin != 0) and (xmax != 0):
-                print("Passo: " + p[2:] + '\tModo: ' + str(m) + '\tValor: ' + s + ' ' + x + '\tTempo: ' + t[2:] + '\tModo de Comparação: ' + str(c) + '\tValor Min: ' + smin + ' ' + xmin + '\tValor Max: ' + s + ' ' + xmax + ' e CRC: ' + crc[2:])
-                Popen(["./rk8511_.sh", com.get(), p[2:], str(m)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                print("Passo: " + p[2:] + '\tModo: ' + str(m) + '\tValor: ' + x + '\tTempo: ' + t[2:] +
+                      '\tModo de Comparação: ' + str(c) + '\tValor Min: ' + xmin + '\tValor Max: ' + xmax + ' e CRC: ' + crc[2:])
+                Popen(["./rk8511_.sh", com.get(), p[2:], str(m), x, t[2:], str(c), xmin, xmax], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
                 print('Falha no passo ' + p)
                 break
