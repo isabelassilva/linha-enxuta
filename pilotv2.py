@@ -610,9 +610,6 @@ def enviar():
                 print('Falha no passo ' + p)
                 break
 
-            if n == PASSOS:
-                pass    # só se n alcançar a formação de todos os passos, enviar
-
         print()
     #endregion
 
@@ -656,9 +653,21 @@ def valueTypeDefiner(none):
     for n in range(0, p):
         if (mode[n].current() == 4) or (mode[n].current() == 5):
             valor[n].set('----')
+            value[n].configure(state='disabled')
+
+            test[n].configure(state='disabled')
+
+            if mode[n].current() == 4:
+                test[n].current(0)
+            else:
+                test[n].current(1)
 
         elif not isnum(valor[n].get()):
             valor[n].set('0.000')
+            value[n].configure(state='enabled')
+
+            test[n].configure(state='enabled')
+
 
 colMw = 11      # largura da coluna MODO
 colM = colP+1
