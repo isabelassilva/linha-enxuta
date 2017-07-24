@@ -1,6 +1,6 @@
 #!/bin/bash
 
-frame="\x55\xaa\x30\x10\xn\xm\x0\xH\xH\xH\xt\xu\x0\xI\xI\xI\x0\xJ\xJ\xJ\xa3"
+frame="\x55\xaa\x30\x10\xn\xm\x0\xH\xH\xH\xt\xu\x0\xI\xI\xI\x0\xJ\xJ\xJ\xK"
 
 frame=${frame/n/$2}             # passo
 frame=${frame/m/$3}             # modo
@@ -27,6 +27,7 @@ frame=${frame/I/$YC}            # byte3 de Xmin
 frame=${frame/J/$ZA}            # byte1 de Xmax
 frame=${frame/J/$ZB}            # byte2 de Xmax
 frame=${frame/J/$ZC}            # byte3 de Xmax
+frame=${frame/K/$9}             # crc
 
 if [ "$1" = "0" ]; then
     echo -e $frame > /dev/ttyUSB0

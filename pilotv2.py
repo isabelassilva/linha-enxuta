@@ -277,6 +277,8 @@ def fillin(str, n):
 
 overflow8 = 256
 overflow9 = 512
+overflow10 = 1024
+overflow11 = 2048
 
 
 def checksum(hexStr, s, tipo):
@@ -507,6 +509,34 @@ def maxGetValue(x, p):
         return 0
 
 
+def checksum2(parcela):
+# 1a operação: somando o frame byte a byte /55/aa/30/10/+parcela
+
+    soma = 319 + parcela
+
+# 2a operação: reduzindo a soma a único byte
+
+    if soma > overflow11:
+        byte = soma - overflow11
+    else:
+        byte = soma
+
+    if byte > overflow10:
+        byte = byte - overflow10
+
+    if byte > overflow9:
+        byte = byte - overflow9
+
+    if byte > overflow8:
+        byte = byte - overflow8
+
+# 3a operação: complementando o byte (negando cada um dos bits)
+    byte_ = 255 - byte
+
+# 4a operação: somando 1
+    return hex(byte_+1)
+
+
 def enviar():
     aba = ControleDeAbas.index(ControleDeAbas.select())
 
@@ -553,10 +583,29 @@ def enviar():
 
             xmax = maxGetValue(c, n)
 
+            # cálculo do CRC
+
+            parteInt = (n+1) + m + c + int(t, 16)
+
+            parteHex = int(x[2:4], 16) + int(x[4:6], 16) + int(x[6:8], 16) + \
+                       int(xmin[2:4], 16) + int(xmin[4:6], 16) + int(xmin[6:8], 16) + \
+                       int(xmax[2:4], 16) + int(xmax[4:6], 16) + int(xmax[6:8], 16)
+
+            parcela = parteInt + parteHex
+
+            crc = checksum2(parcela)
+
             if (x != 0) and (t != 0) and (xmin != 0) and (xmax != 0):
-                print("Passo: " + p[2:] + '\tModo: ' + str(m) + '\tValor: ' + x + '\tTempo: ' + t[2:] +
-                      '\tModo de Comparação: ' + str(c) + '\tValor Min: ' + xmin + '\tValor Max: ' + xmax + ' e CRC: ' + crc[2:])
-                Popen(["./rk8511_.sh", com.get(), p[2:], str(m), x, t[2:], str(c), xmin, xmax], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                print("Passo: " + p[2:] +
+                      '\tMODO: ' + str(m) +
+                      '\tVALOR: ' + x +
+                      '\tTEMPO: ' + t[2:] +
+                      '\tCOMPAR.: ' + str(c) +
+                      '\tVal.MIN: ' + xmin +
+                      '\tVal.MAX: ' + xmax +
+                      ' e CRC: ' + crc[2:])
+
+                Popen(["./rk8511_.sh", com.get(), p[2:], str(m), x, t[2:], str(c), xmin, xmax, crc[2:]], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
                 print('Falha no passo ' + p)
                 break
