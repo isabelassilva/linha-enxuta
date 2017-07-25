@@ -1,5 +1,5 @@
 
-#region :: Configurações da Janela Principal
+# region :: Configurações da Janela Principal
 
 import tkinter as tk
 
@@ -11,34 +11,34 @@ win.title("Software RK8511")
 
 win.attributes('-zoomed', True)
 
-#endregion
+# endregion
 
-#region :: Configuraçao de Fontes
+# region :: Configuraçao de Fontes
 
 fontsize = 30
 f = ("Times News Roman", fontsize)
 g = ("Times News Roman", fontsize-10)
 
-#endregion
+# endregion
 
-#region :: Style Configuring
+# region :: Style Configuring
 
 style = ttk.Style()
 style.theme_use('alt')
 
-#endregion
+# endregion
 
-#region Frame Top
+# region Frame Top
 
 top = ttk.Frame(win)
 top.pack(fill='both', expand=1)
 
-#region Frame Left
+# region Frame Left
 
 left = ttk.Frame(top)
 left.pack(side=tk.LEFT, fill='both', expand=1)
 
-#region Frame de Abas
+# region Frame de Abas
 
 ControleDeAbas = ttk.Notebook(left)
 
@@ -52,51 +52,53 @@ aba2 = ttk.Frame(ControleDeAbas)
 
 ControleDeAbas.add(aba2, text="Teste Automático    ")
 
-#endregion
+# endregion
 
-#region Parte Comum :: Aquisição de Dados
-
-# Frame de Aquisição de Dados
+# region Parte Comum :: Frame Aquisição de Dados
 
 interface = ttk.LabelFrame(left, text='Aquisição de Dados')
 
 interface.pack(side=tk.BOTTOM, expand=1)
 
-# Labels Estáticos
+# region Labels Estáticos
 
 refx = 0
 refy = 0
 
-ttk.Label(interface, text='Tensão (V):', font=f).grid(column=refx,row=refy,sticky='W')
-ttk.Label(interface, text='Potência (W):', font=f).grid(column=refx,row=refy+1,sticky='W')
-ttk.Label(interface, text='Corrente (A):', font=f).grid(column=refx+2,row=refy,sticky='W')
-ttk.Label(interface, text='Resistência (ohm):', font=f).grid(column=refx+2,row=refy+1,sticky='W')
+ttk.Label(interface, text='Tensão (V):', font=f).grid(column=refx, row=refy, sticky='W')
+ttk.Label(interface, text='Potência (W):', font=f).grid(column=refx, row=refy+1, sticky='W')
+ttk.Label(interface, text='Corrente (A):', font=f).grid(column=refx+2, row=refy, sticky='W')
+ttk.Label(interface, text='Resistência (ohm):', font=f).grid(column=refx+2, row=refy+1, sticky='W')
 
-# Labels Dinâmicos
+# endregion
 
-w=8
+# region Labels Dinâmicos
+
+w = 8
 
 V = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
-V.grid(column=refx+1,row=refy,sticky='W')
+V.grid(column=refx+1, row=refy, sticky='W')
 
 W = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
-W.grid(column=refx+1,row=refy+1,sticky='W')
+W.grid(column=refx+1, row=refy+1, sticky='W')
 
 I = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
-I.grid(column=refx+3,row=refy,sticky='W')
+I.grid(column=refx+3, row=refy, sticky='W')
 
 R = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, font=f)
-R.grid(column=refx+3,row=refy+1,sticky='W')
+R.grid(column=refx+3, row=refy+1, sticky='W')
 
 for child in interface.winfo_children():
-    child.grid_configure(padx=10,pady=6)
+    child.grid_configure(padx=10, pady=6)
 
-# Funcionalidade "Atualizar"
+# endregion
+
+# region Função "Atualizar"
 
 
 def hexTOint(word):
     if len(word) == 2:
-        word=word[0]+'0'+word[1]
+        word = word[0]+'0'+word[1]
         print("word", word)
     return (int(word,16)/100)
 
@@ -133,36 +135,39 @@ def atualizar():
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
-tk.Button(interface, text="Atualizar", command=atualizar).grid(column=1,row=refy+2, columnspan=2, padx=8,pady=12)
+tk.Button(interface, text="Atualizar", command=atualizar).grid(column=1, row=refy+2, columnspan=2, padx=8, pady=12)
 
-#endregion
+# endregion
 
-#endregion
+# endregion
 
-#region Frame de Botoes Comuns aos Modos e ao Teste Automático
+# endregion
+
+# region Frame de Botoes Comuns aos Modos e ao Teste Automático
 
 comum = tk.Label(top, relief='flat', bd=1)
 comum.pack(side=tk.RIGHT, fill='both')
 
-#region Frame de Seleção da Porta
+# region Frame de Seleção da Porta
 
 porta = ttk.LabelFrame(comum, text='Porta')
 
-porta.grid(column=refx,row=refy,padx=38,pady=34)
+porta.grid(column=refx, row=refy, padx=38, pady=34)
 
 com = ttk.Combobox(porta, width=6, state='readonly')
 
-com['values']=(' ',0,1,2)
+com['values'] = (' ', 0, 1, 2)
 
-com.grid(column=refx,row=refy,padx=8,pady=16)
+com.grid(column=refx, row=refy, padx=8, pady=16)
 
 com.current(0)
 
-#endregion
+# endregion
 
-#region Seção "Em qual Aba estou"
+# region Seção "Em qual Aba estou"
 l = ttk.Label(comum, text="a Aba que estou é")
 l.grid(column=refx, row=refy+2)
+
 
 def func():
     aba = ControleDeAbas.index(ControleDeAbas.select())
@@ -170,21 +175,19 @@ def func():
 
 ttk.Button(comum, text="Detector de Abas", command=func).grid(column=refx, row=refy+1, padx=8, pady=12)
 
-#endregion
+# endregion
 
-#end region
+# endregion
 
-#endregion
+# endregion
 
-#endregion
-
-#region Aba1 :: Modos Operacionais
+# region Aba1 :: Modos Operacionais
 
 modo = ttk.Frame(aba1)
 
 modo.pack(side=tk.BOTTOM, expand=1)
 
-#region RadioButtons
+# region RadioButtons
 
 modos = ["Tensão Constante",
          "Corrente Constante",
@@ -193,6 +196,7 @@ modos = ["Tensão Constante",
 
 radVar = tk.IntVar()
 radVar.set(99)
+
 
 def radCall():
     radSel = radVar.get()
@@ -218,46 +222,46 @@ def radCall():
 for row in range(len(modos)):
     tk.Radiobutton(modo, text=modos[row], variable=radVar, value=row, command=radCall, font=f).grid(column=refx, row=row, sticky=tk.W)
 
-#endregion
+# endregion
 
-#region Frame de entradas
+# region Frame de entradas
 
 entradasModo = ttk.Label(modo)
 
-entradasModo.grid(column=refx+1,row=refy, rowspan=len(modos))
+entradasModo.grid(column=refx+1, row=refy, rowspan=len(modos))
 
 strV = tk.StringVar()
 Vcte = ttk.Entry(entradasModo,  textvariable=strV, font=f)
-Vcte.grid(column=refx+1,row=refy, sticky=tk.W)
+Vcte.grid(column=refx+1, row=refy, sticky=tk.W)
 
 strI = tk.StringVar()
 Icte = ttk.Entry(entradasModo, textvariable=strI, font=f)
-Icte.grid(column=refx+1,row=refy+1, sticky=tk.W)
+Icte.grid(column=refx+1, row=refy+1, sticky=tk.W)
 
 strP = tk.StringVar()
 Pcte = ttk.Entry(entradasModo, textvariable=strP, font=f)
-Pcte.grid(column=refx+1,row=refy+2, sticky=tk.W)
+Pcte.grid(column=refx+1, row=refy+2, sticky=tk.W)
 
 strR = tk.StringVar()
 Rcte = ttk.Entry(entradasModo, textvariable=strR, font=f)
-Rcte.grid(column=refx+1,row=refy+3, sticky=tk.W)
+Rcte.grid(column=refx+1, row=refy+3, sticky=tk.W)
 
 for child in entradasModo.winfo_children():
     child.grid_configure(padx=10,pady=6)
     child.configure(state='disabled', width=8)
 
-#endregion
+# endregion
 
-#endregion
+# endregion
 
-#region Funcionalidade do Botão "Enviar"
+# region Funcionalidade do Botão "Enviar"
 
 
 def isnum(str):
-    return str.replace('.','',1).isdigit()
+    return str.replace('.', '', 1).isdigit()
 
 
-def truncate(f,n):
+def truncate(f, n):
     f = str(f)
     dot = f.find('.')
     return float(f[:dot+1+n])
@@ -275,13 +279,15 @@ def fillin(str, n):
     return str
 
 
+# region Variáveis Auxiliares da Função checksum()
+
 overflow8 = 256
 overflow9 = 512
 overflow10 = 1024
 overflow11 = 2048
-
-
 p1 = [303, 306, 310, 312, 319]
+
+# endregion
 
 
 def checksum(tipo, p2):
@@ -329,7 +335,7 @@ def particiona(hexstr):
     return byte_2, s
 
 
-#region Variáveis Auxiliares da Função sendX()
+# region Variáveis Auxiliares da Função sendX()
 
 Xcte = [Vcte, Icte, Pcte, Rcte]
 
@@ -343,7 +349,7 @@ weight = [1000, 10000, 100, 100]
 
 upper_bound = [150000, 300000, 15000, 9999999]
 
-#endregion
+# endregion
 
 
 def sendX(x):    # vai entar 0, 1, 2 ou 3
@@ -512,7 +518,7 @@ def enviar():
 
     else:
 
-    #region Obteção dos parâmetros referentes ao FRAME0
+    # region Obteção dos parâmetros referentes ao FRAME0
         p = int(passos.get())
 
         m = modo_saida.get()
@@ -531,7 +537,7 @@ def enviar():
         status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
         Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    #endregion
+    # endregion
 
     # region Obteção dos parâmetros referentes ao FRAMEn
         for n in range(0, PASSOS):
@@ -578,29 +584,29 @@ def enviar():
                 break
 
         print()
-    #endregion
+    # endregion
 
 
-tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8,pady=12)
+tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8, pady=12)
 
-#endregion
+# endregion
 
-#region Parte Comum :: StatusBar
+# region Parte Comum :: StatusBar
 
 status = ttk.Label(win, text="Bem-vindo ao Software RK8511!", borderwidth=1, relief=tk.SUNKEN, anchor=tk.W)
 
 status.pack(side=tk.BOTTOM, fill=tk.X)
 
-#endregion
+# endregion
 
-#region Aba2 :: Teste Automático
+# region Aba2 :: Teste Automático
 
-#region Frame de Configuração de Valores
+# region Frame de Configuração de Valores
 
 conf_valores = ttk.Frame(aba2)
 conf_valores.pack(expand=1)
 
-#region Coluna PASSOS
+# region Coluna PASSOS
 
 PASSOS = 7
 colPw = 6       # largura da coluna PASSO
@@ -611,9 +617,11 @@ tk.Label(conf_valores, text='PASSO', relief='raised', width=colPw, anchor=tk.CEN
 for n in range(1, PASSOS+1):
     tk.Label(conf_valores, text=n, relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2).grid(column=colP, row=titleRow+n)
 
-#endregion
+# endregion
 
-#region Coluna TIPO DE TESTE (MODO)
+# region Coluna TIPO DE TESTE (MODO)
+
+
 def valueTypeDefiner(none):
     p = int(passos.get())
 
@@ -635,7 +643,6 @@ def valueTypeDefiner(none):
 
             test[n].configure(state='enabled')
             test[n].configure(state='readonly')
-
 
 colMw = 11      # largura da coluna MODO
 colM = colP+1
@@ -660,9 +667,10 @@ for n in range(1, PASSOS+1):
 
     mode.append(modeOptions)
 
-#endregion
+# endregion
 
-#region Coluna VALOR
+# region Coluna VALOR
+
 colVw = 7       # largura da coluna VALOR
 colV = colM+1
 tk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
@@ -680,9 +688,10 @@ for n in range(1, PASSOS+1):
     e.set('0.000')
     valor.append(e)
 
-#endregion
+# endregion
 
-#region Coluna TEMPO
+# region Coluna TEMPO
+
 colTw = 7       # largura da coluna TEMPO
 colT = colV+1
 tk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colT, row=titleRow)
@@ -700,9 +709,10 @@ for n in range(1, PASSOS+1):
     e.set('0')
     tempo.append(e)
 
-#endregion
+# endregion
 
-#region Coluna TIPO DE COMPARAÇÃO
+# region Coluna TIPO DE COMPARAÇÃO
+
 colCw = 11      # largura da coluna
 colC = colT+1
 tk.Label(conf_valores, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
@@ -723,9 +733,10 @@ for n in range(1, PASSOS+1):
 
     test.append(testOptions)
 
-#endregion
+# endregion
 
-#region Coluna VALOR MÍNIMO
+# region Coluna VALOR MÍNIMO
+
 colVMINw = 7        # largura da coluna
 colVMIN = colC+1
 tk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
@@ -743,9 +754,10 @@ for n in range(1, PASSOS+1):
     e.set('0.000')
     valorMin.append(e)
 
-#endregion
+# endregion
 
-#region Coluna VALOR MÁXIMO
+# region Coluna VALOR MÁXIMO
+
 colVMAXw = 7        # largura da coluna
 colVMAX = colVMIN+1
 tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120, font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
@@ -763,16 +775,16 @@ for n in range(1, PASSOS+1):
     e.set('0.000')
     valorMax.append(e)
 
-#endregion
+# endregion
 
-#endregion
+# endregion
 
-#region Frame de Configuração de Parâmetros
+# region Frame de Configuração de Parâmetros
 
 conf_parametros = ttk.Frame(aba2)
 conf_parametros.pack(expand=1)
 
-#region Seleção de Passos
+# region Seleção de Passos
 
 
 def selectstep(none):
@@ -808,9 +820,9 @@ passos['values'] = strDePassos
 
 passos.current(PASSOS-1)
 
-#endregion
+# endregion
 
-#region Seleção do Modo de Saída
+# region Seleção do Modo de Saída
 
 ttk.Label(conf_parametros, text='MODO DE SAÍDA:', font=g).grid(column=refx+2, row=refy)
 
@@ -822,9 +834,9 @@ modo_saida['values'] = ('Pulso',
 
 modo_saida.current(0)
 
-#endregion
+# endregion
 
-#region Seleção do Modo do Trigger
+# region Seleção do Modo do Trigger
 
 ttk.Label(conf_parametros, text='MODO DO TRIGGER:', font=g).grid(column=refx+4, row=refy)
 
@@ -837,13 +849,13 @@ modo_trigger['values'] = ('Desabilitado',
 
 modo_trigger.current(0)
 
-#endregion
+# endregion
 
 for child in conf_parametros.winfo_children():
     child.grid_configure(padx=10)
 
-#endregion
+# endregion
 
-#endregion
+# endregion
 
 win.mainloop()
