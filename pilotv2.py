@@ -322,19 +322,6 @@ def intTOhex(num):
     return hex(num)
 
 
-def particiona(hexstr):
-    if len(hexstr) < 7:
-        byte_2 = fillin(hexstr, 6)
-        s = '0'
-    elif len(hexstr) > 7:
-        s = hexstr[2] + hexstr[3]
-        byte_2 = hexstr[0:2] + hexstr[4:]
-    else:
-        s = hexstr[2]
-        byte_2 = hexstr[0:2] + hexstr[3:]
-    return byte_2, s
-
-
 # region Variáveis Auxiliares da Função sendX()
 
 Xcte = [Vcte, Icte, Pcte, Rcte]
