@@ -281,24 +281,13 @@ overflow10 = 1024
 overflow11 = 2048
 
 
-def checksum(hexStr, s, tipo):
+p1 = [303, 306, 310, 312, 319]
 
-# 0a operação: tornando os bytes (do valor a ser enviado) somáveis
-    if tipo != 'TA':
-        int1 = int(hexStr[2] + hexStr[3], 16)
-        int2 = int(hexStr[4] + hexStr[5], 16)
 
-        if tipo == 0:    # 1a operação: somando o frame byte a byte /55/aa/30/00/+s+int1+int2
-            soma = 303 + int1 + int2 + int(s)
-        if tipo == 1:    # 1a operação: somando o frame byte a byte /55/aa/30/03/+s+int1+int2
-            soma = 306 + int1 + int2 + int(s)
-        if tipo == 2:  # 1a operação: somando o frame byte a byte /55/aa/30/07/+s+int1+int2
-            soma = 310 + int1 + int2 + int(s)
-        if tipo == 3:  # 1a operação: somando o frame byte a byte /55/aa/30/09/+s+int1+int2
-            soma = 312 + int1 + int2 + int(s, 16)
+def checksum(tipo, p2):
 
-    else:   # 1a operação: somando o frame byte a byte /55/aa/30/10/+s+int1+int2
-        soma = 319 + s
+# 1a operação: somando o frame byte a byte
+    soma = p1[tipo] + p2
 
 # 2a operação: reduzindo a soma a único byte
 
@@ -373,13 +362,15 @@ def sendX(x):    # vai entar 0, 1, 2 ou 3
         else:
             Xhex = intTOhex(Xint)  # Retorna variável do tipo str
 
-            Xhex, s = particiona(Xhex)
+            Xhex = fillin(Xhex, 8)
 
-            crc = checksum(Xhex, s, x)
+            parcela = int(Xhex[2:4], 16) + int(Xhex[4:6], 16) + int(Xhex[6:8], 16)
 
-            status.configure(text="desejo enviar o valor, " + str(Xfloat) + " , cujo HEX é " + Xhex + ", cujo CRC é " + crc + " e s =" + s)
+            crc = checksum(x, parcela)
 
-            Popen(["./rk8511.sh", com.get(), "TX", code[x], s, Xhex, '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            status.configure(text="desejo enviar o valor, " + str(Xfloat) + " , cujo HEX é " + Xhex + ", cujo CRC é " + crc)
+
+            Popen(["./rk8511.sh", com.get(), "TX", code[x], Xhex, '0', '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     else:
         status.configure(text=" Valor Inválido.")
 

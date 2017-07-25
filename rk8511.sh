@@ -22,7 +22,7 @@ fi
 
 # Envio de Dados para à Carga
 
-frame="\x55\xaa\x30\xMODO\x00\xs\xA\xB\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xC"
+frame="\x55\xaa\x30\xMODO\x00\xJ\xJ\xJ\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xC"
 
 if [ "$2" = "TX" ]; then
 
@@ -36,15 +36,14 @@ if [ "$2" = "TX" ]; then
 
     if [ $MODO != "10" ]; then
 
-        s="$4"
-
-        VALOR="$5"
+        VALOR="$4"
         BYTE1=${VALOR:2:2}
-        BYTE2=${VALOR:4:4}
+        BYTE2=${VALOR:4:2}
+        BYTE3=${VALOR:6:2}
 
-        frame=${frame/s/$s}
-        frame=${frame/A/$BYTE1}
-        frame=${frame/B/$BYTE2}
+        frame=${frame/J/$BYTE1}
+        frame=${frame/J/$BYTE2}
+        frame=${frame/J/$BYTE3}
     fi
 
     if [ $MODO = "10" ]; then
