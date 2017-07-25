@@ -290,15 +290,19 @@ def checksum(tipo, p2):
     soma = p1[tipo] + p2
 
 # 2a operação: reduzindo a soma a único byte
+    byte = soma
 
-    if soma > overflow9:
-        byte = soma - overflow9
+    if byte > overflow11:
+        byte -= overflow11
 
-        if byte > overflow8:
-            byte = byte - overflow8
+    if byte > overflow10:
+        byte -= overflow10
 
-    elif soma > overflow8:
-        byte = soma - overflow8
+    if byte > overflow9:
+        byte -= overflow9
+
+    if byte > overflow8:
+        byte -= overflow8
 
 # 3a operação: complementando o byte (negando cada um dos bits)
     byte_ = 255 - byte
@@ -500,34 +504,6 @@ def maxGetValue(x, p):
         return 0
 
 
-def checksum2(parcela):
-# 1a operação: somando o frame byte a byte /55/aa/30/10/+parcela
-
-    soma = 319 + parcela
-
-# 2a operação: reduzindo a soma a único byte
-
-    if soma > overflow11:
-        byte = soma - overflow11
-    else:
-        byte = soma
-
-    if byte > overflow10:
-        byte = byte - overflow10
-
-    if byte > overflow9:
-        byte = byte - overflow9
-
-    if byte > overflow8:
-        byte = byte - overflow8
-
-# 3a operação: complementando o byte (negando cada um dos bits)
-    byte_ = 255 - byte
-
-# 4a operação: somando 1
-    return hex(byte_+1)
-
-
 def enviar():
     aba = ControleDeAbas.index(ControleDeAbas.select())
 
@@ -550,7 +526,7 @@ def enviar():
         else:
             t = 2
 
-        crc = checksum(0, (p-1)+m+t, 'TA')
+        crc = checksum(4, (p-1)+m+t)
 
         status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
@@ -584,7 +560,7 @@ def enviar():
 
             parcela = parteInt + parteHex
 
-            crc = checksum2(parcela)
+            crc = checksum(4, parcela)
 
             if (x != 0) and (t != 0) and (xmin != 0) and (xmax != 0):
                 print("Passo: " + p[2:] +
@@ -658,6 +634,7 @@ def valueTypeDefiner(none):
             value[n].configure(state='enabled')
 
             test[n].configure(state='enabled')
+            test[n].configure(state='readonly')
 
 
 colMw = 11      # largura da coluna MODO

@@ -52,9 +52,9 @@ if [ "$2" = "TX" ]; then
         m="$5"
         p="$6"
 
-        frame=${frame/s/$t}
-        frame=${frame/A/$m}
-        frame=${frame/B/$p}
+        frame=${frame/J/$t}
+        frame=${frame/J/$m}
+        frame=${frame/J/$p}
     fi
 
     if [ "$1" = "0" ]; then
