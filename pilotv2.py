@@ -143,7 +143,7 @@ tk.Button(interface, text="Atualizar", command=atualizar).grid(column=1, row=ref
 
 # endregion
 
-# region Frame de Botoes Comuns aos Modos e ao Teste Automático
+# region Frame de Botoes Comuns aos Modos Operacionais e ao Teste Automático
 
 comum = tk.Label(top, relief='flat', bd=1)
 comum.pack(side=tk.RIGHT, fill='both')
@@ -164,16 +164,21 @@ com.current(0)
 
 # endregion
 
-# region Seção "Em qual Aba estou"
-l = ttk.Label(comum, text="a Aba que estou é")
-l.grid(column=refx, row=refy+2)
+# region Botão ENVIAR MODO
 
 
-def func():
+def enviarModo():
+    porta = com.get()
     aba = ControleDeAbas.index(ControleDeAbas.select())
-    l.configure(text=aba)
+    modo = radVar.get()
 
-ttk.Button(comum, text="Detector de Abas", command=func).grid(column=refx, row=refy+1, padx=8, pady=12)
+    if porta != ' ':
+        Popen(["./rk8511_bo.sh", porta, str(aba), str(modo)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        status.configure(text=" ")
+    else:
+        status.configure(text=" Selecione a PORTA de comunicação.")
+
+tk.Button(comum, text="ENVIAR MODO", command=enviarModo, anchor=tk.CENTER, wraplength=110, justify=tk.CENTER, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+1, columnspan=2, padx=8, pady=12)
 
 # endregion
 
@@ -573,8 +578,7 @@ def enviar():
         print()
     # endregion
 
-
-tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2).grid(column=0, row=refy+4, columnspan=2, padx=8, pady=12)
+tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2, anchor=tk.CENTER, wraplength=150, justify=tk.CENTER).grid(column=0, row=refy+4, columnspan=2, padx=8, pady=12)
 
 # endregion
 
