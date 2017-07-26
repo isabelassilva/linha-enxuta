@@ -111,7 +111,7 @@ def atualizar():
     if com.get() != ' ':
         status.configure(text=' ')
 
-        p = Popen(["./rk8511.sh", com.get(), "RX"], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        p = Popen(["./rk8511_rx.sh", com.get()], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         output, err = p.communicate(b"input data that is passed to subprocess' stdin")
         if output != b'Can not open comport\n':
             print("frame:", output)
@@ -367,7 +367,7 @@ def sendX(x):    # vai entar 0, 1, 2 ou 3
 
             status.configure(text="desejo enviar o valor, " + str(Xfloat) + " , cujo HEX é " + Xhex + ", cujo CRC é " + crc)
 
-            Popen(["./rk8511.sh", com.get(), "TX", code[x], Xhex, '0', '0', crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            Popen(["./rk8511_mo.sh", com.get(), code[x], Xhex, crc[2:]], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     else:
         status.configure(text=" Valor Inválido.")
 
@@ -523,7 +523,7 @@ def enviar():
 
         status.configure(text='Desejo enviar ' + str(p) + ' passos, modo de saída = ' + str(m) + ', trigger = ' + str(t) + ' e CRC = ' + crc)
 
-        Popen(["./rk8511.sh", com.get(), "TX", "10", str(t), str(m), str(p-1), crc], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        Popen(["./rk8511_ta.sh", com.get(), str(t), str(m), str(p-1), crc[2:]], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     # endregion
 
     # region Obteção dos parâmetros referentes ao FRAMEn
@@ -565,7 +565,7 @@ def enviar():
                       '\tVal.MAX: ' + xmax +
                       ' e CRC: ' + crc[2:])
 
-                Popen(["./rk8511_.sh", com.get(), p[2:], str(m), x, t[2:], str(c), xmin, xmax, crc[2:]], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                Popen(["./rk8511_ta.sh", com.get(), p[2:], str(m), x, t[2:], str(c), xmin, xmax, crc[2:]], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
                 print('Falha no passo ' + p)
                 break
