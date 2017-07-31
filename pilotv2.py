@@ -564,19 +564,21 @@ def enviar():
 
             xmax = maxGetValue(c, n)
 
-            # cálculo do CRC
-
-            parteInt = (n+1) + m + c + int(t, 16)
-
-            parteHex = int(x[2:4], 16) + int(x[4:6], 16) + int(x[6:8], 16) + \
-                       int(xmin[2:4], 16) + int(xmin[4:6], 16) + int(xmin[6:8], 16) + \
-                       int(xmax[2:4], 16) + int(xmax[4:6], 16) + int(xmax[6:8], 16)
-
-            parcela = parteInt + parteHex
-
-            crc = checksum(4, parcela)
-
             if (x != 0) and (t != 0) and (xmin != 0) and (xmax != 0):
+                step[n].configure(background='gainsboro')
+
+                # cálculo do CRC
+
+                parteInt = (n+1) + m + c + int(t, 16)
+
+                parteHex = int(x[2:4], 16) + int(x[4:6], 16) + int(x[6:8], 16) + \
+                           int(xmin[2:4], 16) + int(xmin[4:6], 16) + int(xmin[6:8], 16) + \
+                           int(xmax[2:4], 16) + int(xmax[4:6], 16) + int(xmax[6:8], 16)
+
+                parcela = parteInt + parteHex
+
+                crc = checksum(4, parcela)
+
                 print("Passo: " + p[2:] +
                       '\tMODO: ' + str(m) +
                       '\tVALOR: ' + x +
@@ -589,6 +591,7 @@ def enviar():
                 Popen(["./rk8511_ta.sh", com.get(), p[2:], str(m), x, t[2:], str(c), xmin, xmax, crc[2:]], stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
                 print('Falha no passo ' + p)
+                step[n].configure(background='IndianRed1')
                 break
 
         print()
@@ -621,8 +624,12 @@ colP = 1
 titleRow = 0      # linha dos títulos
 tk.Label(conf_valores, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colP, row=titleRow)
 
+step = []
+
 for n in range(1, PASSOS+1):
-    tk.Label(conf_valores, text=n, relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2).grid(column=colP, row=titleRow+n)
+    st = tk.Label(conf_valores, text=n, relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2)
+    st.grid(column=colP, row=titleRow+n)
+    step.append(st)
 
 # endregion
 
