@@ -143,7 +143,7 @@ tk.Button(interface, text="Atualizar", command=atualizar).grid(column=1, row=ref
 
 # endregion
 
-# region Frame de Botoes Comuns aos Modos Operacionais e ao Teste Automático
+ # region Frame de Botoes Comuns aos Modos Operacionais e ao Teste Automático
 
 comum = tk.Label(top, relief='flat', bd=1)
 comum.pack(side=tk.RIGHT, fill='both')
@@ -179,6 +179,22 @@ def enviarModo():
         status.configure(text=" Selecione a PORTA de comunicação.")
 
 tk.Button(comum, text="ENVIAR MODO", command=enviarModo, anchor=tk.CENTER, wraplength=110, justify=tk.CENTER, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+1, columnspan=2, padx=8, pady=12)
+
+# endregion
+
+# region Botão ON/OFF
+
+
+def onoff():
+    porta = com.get()
+
+    if porta != ' ':
+        Popen(["./rk8511_bo.sh", porta], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        status.configure(text=" ")
+    else:
+        status.configure(text=" Selecione a PORTA de comunicação.")
+
+tk.Button(comum, text="ON/OFF", command=onoff, anchor=tk.CENTER, wraplength=110, justify=tk.CENTER, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+5, columnspan=2, padx=8, pady=12)
 
 # endregion
 

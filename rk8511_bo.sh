@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$2" = "0" ]; then
+if [ "$2" = "0" ]; then                 # ABA DE MODOS OPERACIONAIS
     if [ "$3" = "0" ]; then
         frame="\x55\xaa\x20\x00\xe1"
 
@@ -13,8 +13,12 @@ if [ "$2" = "0" ]; then
     elif [ "$3" = "3" ]; then
         frame="\x55\xaa\x20\x09\xd8"
     fi
-elif [ "$2" = "1" ]; then
-        frame="\x55\xaa\x20\x10\xd1"
+
+elif [ "$2" = "1" ]; then               # ABA DE TESTE AUTOMÁTICO
+    frame="\x55\xaa\x20\x10\xd1"
+
+else                                    # ON/OFF
+    frame="\x55\xaa\x11\xf0"
 fi
 
 if [ "$1" = "0" ]; then
