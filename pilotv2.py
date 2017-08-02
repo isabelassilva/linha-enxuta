@@ -9,7 +9,12 @@ win = tk.Tk()
 
 win.title("Software RK8511")
 
-win.attributes('-zoomed', True)
+xsize = 1275
+ysize = 780
+
+win.geometry('%dx%d' % (xsize, ysize))
+
+win.resizable(0, 0)
 
 # endregion
 
