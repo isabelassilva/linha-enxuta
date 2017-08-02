@@ -15,7 +15,7 @@ win.attributes('-zoomed', True)
 
 # region :: Configuraçao de Fontes
 
-fontsize = 30
+fontsize = 28
 f = ("Times News Roman", fontsize)
 g = ("Times News Roman", fontsize-10)
 
@@ -614,21 +614,28 @@ status.pack(side=tk.BOTTOM, fill=tk.X)
 # region Frame de Configuração de Valores
 
 def configcanvassize(event):
-    canvas.configure(scrollregion=canvas.bbox("all"), width=1025, height=300)
+    canvas.configure(scrollregion=canvas.bbox("all"), width=910, height=280)
 
-frame_externo = tk.Frame(aba2, bd=2, relief=tk.SUNKEN, width=50, height=100, background='cyan')
+frame_externo = tk.Frame(aba2, bd=2, relief=tk.SUNKEN)      # este frame "segura" toda a tabela do TA
 frame_externo.pack(expand=1)
 
-canvas = tk.Canvas(frame_externo)
-conf_valores = tk.Frame(canvas)
+canvas = tk.Canvas(frame_externo)                   # o canvas "segura" apenas a parte subordinada ao scrollbar
+title_frame = tk.Frame(frame_externo)               # neste frame, que não está associado ao canvas, são fixados os títulos da tabela
+scrollbar = tk.Scrollbar(frame_externo)             # o scrollbar está no mesmo "nível" dos 2 widgets criados acima
+preenchimento = tk.Label(frame_externo, text=' ',
+                relief='raised', anchor=tk.CENTER,
+                font=g, borderwidth=2, height=2)    # preenchimento de um "vacuo" que surge apos os titulos
 
-scrollbar = tk.Scrollbar(frame_externo, command=canvas.yview)
-canvas.configure(yscrollcommand=scrollbar.set)
+scrollbar.configure(command=canvas.yview)           # associaçao do scrollbar ao canvas
+canvas.configure(yscrollcommand=scrollbar.set)      # associação do canvas ao scrollbar
 
-scrollbar.pack(side='right', fill='y')
-canvas.pack(side='left')
+title_frame.grid(column=0, row=0)
+scrollbar.grid(column=1, row=1, sticky='NS')
+canvas.grid(column=0, row=1)
+preenchimento.grid(column=1, row=0)
 
-canvas.create_window((0,0), window=conf_valores, anchor='nw')
+conf_valores = tk.Frame(canvas)                     # este frame é criado para "segurar os widgets dentro do canvas
+canvas.create_window((0, 0), window=conf_valores, anchor='nw')  # ele não é associado ao canvas através de grid() ou pack()
 conf_valores.bind("<Configure>", configcanvassize)
 
 PASSOS = 20
@@ -639,7 +646,7 @@ def tablecreator():
     colPw = 6       # largura da coluna PASSO
     colP = 1
     titleRow = 0      # linha dos títulos
-    tk.Label(conf_valores, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2,
+    tk.Label(title_frame, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, font=g,  borderwidth=2,
              height=2).grid(column=colP, row=titleRow)
 
     step = []
@@ -678,7 +685,8 @@ def tablecreator():
 
     colMw = 11      # largura da coluna MODO
     colM = colP+1
-    tk.Label(conf_valores, text='MODO', relief='raised', width=colMw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colM, row=titleRow)
+    tk.Label(title_frame, text='MODO', relief='raised', width=colMw+1, anchor=tk.CENTER, font=g, borderwidth=2,
+             height=2).grid(column=colM, row=titleRow)
 
     mode = []
 
@@ -705,7 +713,7 @@ def tablecreator():
 
     colVw = 7  # largura da coluna VALOR
     colV = colM + 1
-    tk.Label(conf_valores, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
+    tk.Label(title_frame, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
 
     value = []
     valor = []
@@ -726,7 +734,7 @@ def tablecreator():
 
     colTw = 7  # largura da coluna TEMPO
     colT = colV + 1
-    tk.Label(conf_valores, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2,
+    tk.Label(title_frame, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2,
              height=2).grid(column=colT, row=titleRow)
 
     time = []
@@ -748,7 +756,7 @@ def tablecreator():
 
     colCw = 11      # largura da coluna
     colC = colT+1
-    tk.Label(conf_valores, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
+    tk.Label(title_frame, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
 
     test = []
 
@@ -772,7 +780,7 @@ def tablecreator():
 
     colVMINw = 7        # largura da coluna
     colVMIN = colC+1
-    tk.Label(conf_valores, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110,
+    tk.Label(title_frame, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110,
              font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
 
     minValue = []
@@ -794,7 +802,7 @@ def tablecreator():
 
     colVMAXw = 7        # largura da coluna
     colVMAX = colVMIN+1
-    tk.Label(conf_valores, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120,
+    tk.Label(title_frame, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120,
              font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
 
     maxValue = []
