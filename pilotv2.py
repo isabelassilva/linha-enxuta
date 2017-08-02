@@ -613,6 +613,9 @@ status.pack(side=tk.BOTTOM, fill=tk.X)
 
 # region Frame de Configuração de Valores
 
+#region Formação de "base" para tabela com Scrollbar
+
+
 def configcanvassize(event):
     canvas.configure(scrollregion=canvas.bbox("all"), width=910, height=280)
 
@@ -638,193 +641,193 @@ conf_valores = tk.Frame(canvas)                     # este frame é criado para 
 canvas.create_window((0, 0), window=conf_valores, anchor='nw')  # ele não é associado ao canvas através de grid() ou pack()
 conf_valores.bind("<Configure>", configcanvassize)
 
+#endregion
+
+#region Criaçao da tabela
+
 PASSOS = 20
 
+# region Coluna PASSOS
+colPw = 6       # largura da coluna PASSO
+colP = 1
+titleRow = 0      # linha dos títulos
+tk.Label(title_frame, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, font=g,  borderwidth=2,
+         height=2).grid(column=colP, row=titleRow)
 
-def tablecreator():
-    # region Coluna PASSOS
-    colPw = 6       # largura da coluna PASSO
-    colP = 1
-    titleRow = 0      # linha dos títulos
-    tk.Label(title_frame, text='PASSO', relief='raised', width=colPw, anchor=tk.CENTER, font=g,  borderwidth=2,
-             height=2).grid(column=colP, row=titleRow)
+step = []
 
-    step = []
-
-    for n in range(1, PASSOS+1):
-        st = tk.Label(conf_valores, text=n, relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2)
-        st.grid(column=colP, row=titleRow+n)
-        step.append(st)
-
-    # endregion
-
-    # region Coluna TIPO DE TESTE (MODO)
-
-    def valueTypeDefiner(none):
-        p = int(passos.get())
-
-        for n in range(0, p):
-            if (mode[n].current() == 4) or (mode[n].current() == 5):
-                valor[n].set('----')
-                value[n].configure(state='disabled')
-
-                test[n].configure(state='disabled')
-
-                if mode[n].current() == 4:
-                    test[n].current(0)
-                else:
-                    test[n].current(1)
-
-            elif not isnum(valor[n].get()):
-                valor[n].set('0.000')
-                value[n].configure(state='enabled')
-
-                test[n].configure(state='enabled')
-                test[n].configure(state='readonly')
-
-
-    colMw = 11      # largura da coluna MODO
-    colM = colP+1
-    tk.Label(title_frame, text='MODO', relief='raised', width=colMw+1, anchor=tk.CENTER, font=g, borderwidth=2,
-             height=2).grid(column=colM, row=titleRow)
-
-    mode = []
-
-    for n in range(1, PASSOS+1):
-        modeOptions = ttk.Combobox(conf_valores, width=colMw, state='readonly', font=g)
-        modeOptions.grid(column=colM, row=titleRow+n)
-
-        modeOptions.bind("<<ComboboxSelected>>", valueTypeDefiner)
-
-        modeOptions['values'] = ('V Constante',
-                                 'I Constante',
-                                 'P Constante',
-                                 'R Constante',
-                                 'Aberto',
-                                 'Curto-Circuito')
-
-        modeOptions.current(0)
-
-        mode.append(modeOptions)
-
-    # endregion
-
-    # region Coluna VALOR
-
-    colVw = 7  # largura da coluna VALOR
-    colV = colM + 1
-    tk.Label(title_frame, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
-
-    value = []
-    valor = []
-
-    for n in range(1, PASSOS + 1):
-        e = tk.StringVar()
-
-        ent = ttk.Entry(conf_valores, width=colVw, font=g, textvariable=e, justify='center')
-        ent.grid(column=colV, row=titleRow + n)
-
-        value.append(ent)
-        e.set('0.000')
-        valor.append(e)
-
-    # endregion
-
-    # region Coluna TEMPO
-
-    colTw = 7  # largura da coluna TEMPO
-    colT = colV + 1
-    tk.Label(title_frame, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2,
-             height=2).grid(column=colT, row=titleRow)
-
-    time = []
-    tempo = []
-
-    for n in range(1, PASSOS + 1):
-        e = tk.StringVar()
-
-        ent = ttk.Entry(conf_valores, width=colTw, font=g, textvariable=e, justify='center')
-        ent.grid(column=colT, row=titleRow + n)
-
-        time.append(ent)
-        e.set('0')
-        tempo.append(e)
-
-    # endregion
-
-    # region Coluna TIPO DE COMPARAÇÃO
-
-    colCw = 11      # largura da coluna
-    colC = colT+1
-    tk.Label(title_frame, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
-
-    test = []
-
-    for n in range(1, PASSOS+1):
-        testOptions = ttk.Combobox(conf_valores, width=colCw, state='readonly', font=g)
-
-        testOptions.grid(column=colC, row=titleRow+n)
-
-        testOptions['values'] = ('Tensão',
-                                 'Corrente',
-                                 'Potencia',
-                                 'Resistencia')
-
-        testOptions.current(0)
-
-        test.append(testOptions)
-
-    # endregion
-
-    # region Coluna VALOR MÍNIMO
-
-    colVMINw = 7        # largura da coluna
-    colVMIN = colC+1
-    tk.Label(title_frame, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110,
-             font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
-
-    minValue = []
-    valorMin = []
-
-    for n in range(1, PASSOS+1):
-        e = tk.StringVar()
-
-        ent = ttk.Entry(conf_valores, width=colVMINw, font=g, textvariable=e, justify='center')
-        ent.grid(column=colVMIN, row=titleRow+n)
-
-        minValue.append(ent)
-        e.set('0.000')
-        valorMin.append(e)
-
-    # endregion
-
-    # region Coluna VALOR MÁXIMO
-
-    colVMAXw = 7        # largura da coluna
-    colVMAX = colVMIN+1
-    tk.Label(title_frame, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120,
-             font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
-
-    maxValue = []
-    valorMax = []
-
-    for n in range(1, PASSOS+1):
-        e = tk.StringVar()
-
-        ent = ttk.Entry(conf_valores, width=colVMAXw, font=g, textvariable=e, justify='center')
-        ent.grid(column=colVMAX, row=titleRow+n)
-
-        maxValue.append(ent)
-        e.set('0.000')
-        valorMax.append(e)
-
-    # endregion
-    # region
-    # endregion
-
-tablecreator()
+for n in range(1, PASSOS+1):
+    st = tk.Label(conf_valores, text=n, relief='raised', width=colPw, anchor=tk.CENTER, font=g, borderwidth=2)
+    st.grid(column=colP, row=titleRow+n)
+    step.append(st)
 
 # endregion
+
+# region Coluna TIPO DE TESTE (MODO)
+
+def valueTypeDefiner(none):
+    p = int(passos.get())
+
+    for n in range(0, p):
+        if (mode[n].current() == 4) or (mode[n].current() == 5):
+            valor[n].set('----')
+            value[n].configure(state='disabled')
+
+            test[n].configure(state='disabled')
+
+            if mode[n].current() == 4:
+                test[n].current(0)
+            else:
+                test[n].current(1)
+
+        elif not isnum(valor[n].get()):
+            valor[n].set('0.000')
+            value[n].configure(state='enabled')
+
+            test[n].configure(state='enabled')
+            test[n].configure(state='readonly')
+
+
+colMw = 11      # largura da coluna MODO
+colM = colP+1
+tk.Label(title_frame, text='MODO', relief='raised', width=colMw+1, anchor=tk.CENTER, font=g, borderwidth=2,
+         height=2).grid(column=colM, row=titleRow)
+
+mode = []
+
+for n in range(1, PASSOS+1):
+    modeOptions = ttk.Combobox(conf_valores, width=colMw, state='readonly', font=g)
+    modeOptions.grid(column=colM, row=titleRow+n)
+
+    modeOptions.bind("<<ComboboxSelected>>", valueTypeDefiner)
+
+    modeOptions['values'] = ('V Constante',
+                             'I Constante',
+                             'P Constante',
+                             'R Constante',
+                             'Aberto',
+                             'Curto-Circuito')
+
+    modeOptions.current(0)
+
+    mode.append(modeOptions)
+
+# endregion
+
+# region Coluna VALOR
+
+colVw = 7  # largura da coluna VALOR
+colV = colM + 1
+tk.Label(title_frame, text='VALOR', relief='raised', width=colVw, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colV, row=titleRow)
+
+value = []
+valor = []
+
+for n in range(1, PASSOS + 1):
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colVw, font=g, textvariable=e, justify='center')
+    ent.grid(column=colV, row=titleRow + n)
+
+    value.append(ent)
+    e.set('0.000')
+    valor.append(e)
+
+# endregion
+
+# region Coluna TEMPO
+
+colTw = 7  # largura da coluna TEMPO
+colT = colV + 1
+tk.Label(title_frame, text='TEMPO', relief='raised', width=colTw, anchor=tk.CENTER, font=g, borderwidth=2,
+         height=2).grid(column=colT, row=titleRow)
+
+time = []
+tempo = []
+
+for n in range(1, PASSOS + 1):
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colTw, font=g, textvariable=e, justify='center')
+    ent.grid(column=colT, row=titleRow + n)
+
+    time.append(ent)
+    e.set('0')
+    tempo.append(e)
+
+# endregion
+
+# region Coluna TIPO DE COMPARAÇÃO
+
+colCw = 11      # largura da coluna
+colC = colT+1
+tk.Label(title_frame, text='COMPARAÇÃO', relief='raised', width=colCw+1, anchor=tk.CENTER, font=g, borderwidth=2, height=2).grid(column=colC, row=titleRow)
+
+test = []
+
+for n in range(1, PASSOS+1):
+    testOptions = ttk.Combobox(conf_valores, width=colCw, state='readonly', font=g)
+
+    testOptions.grid(column=colC, row=titleRow+n)
+
+    testOptions['values'] = ('Tensão',
+                             'Corrente',
+                             'Potencia',
+                             'Resistencia')
+
+    testOptions.current(0)
+
+    test.append(testOptions)
+
+# endregion
+
+# region Coluna VALOR MÍNIMO
+
+colVMINw = 7        # largura da coluna
+colVMIN = colC+1
+tk.Label(title_frame, text='VALOR MÍNIMO', relief='raised', width=colVMINw, anchor=tk.CENTER, wraplength=110,
+         font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMIN, row=titleRow)
+
+minValue = []
+valorMin = []
+
+for n in range(1, PASSOS+1):
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colVMINw, font=g, textvariable=e, justify='center')
+    ent.grid(column=colVMIN, row=titleRow+n)
+
+    minValue.append(ent)
+    e.set('0.000')
+    valorMin.append(e)
+
+# endregion
+
+# region Coluna VALOR MÁXIMO
+
+colVMAXw = 7        # largura da coluna
+colVMAX = colVMIN+1
+tk.Label(title_frame, text='VALOR MÁXIMO', relief='raised', width=colVMAXw, anchor=tk.CENTER, wraplength=120,
+         font=g, borderwidth=2, justify=tk.CENTER).grid(column=colVMAX, row=titleRow)
+
+maxValue = []
+valorMax = []
+
+for n in range(1, PASSOS+1):
+    e = tk.StringVar()
+
+    ent = ttk.Entry(conf_valores, width=colVMAXw, font=g, textvariable=e, justify='center')
+    ent.grid(column=colVMAX, row=titleRow+n)
+
+    maxValue.append(ent)
+    e.set('0.000')
+    valorMax.append(e)
+
+# endregion
+
+# endregion
+
+#endregion
 
 # region Frame de Configuração de Parâmetros
 
