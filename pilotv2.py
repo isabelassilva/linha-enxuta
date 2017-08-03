@@ -148,7 +148,7 @@ tk.Button(interface, text="Atualizar", command=atualizar).grid(column=1, row=ref
 
 # endregion
 
- # region Frame de Botoes Comuns aos Modos Operacionais e ao Teste Automático
+# region Frame de Botoes Comuns aos Modos Operacionais e ao Teste Automático
 
 comum = tk.Label(top, relief='flat', bd=1)
 comum.pack(side=tk.RIGHT, fill='both')
@@ -157,13 +157,13 @@ comum.pack(side=tk.RIGHT, fill='both')
 
 porta = ttk.LabelFrame(comum, text='Porta')
 
-porta.grid(column=refx, row=refy, padx=38, pady=34)
+porta.grid(column=refx, row=refy)
 
-com = ttk.Combobox(porta, width=6, state='readonly')
+com = ttk.Combobox(porta, width=4, state='readonly', font=g)
 
 com['values'] = (' ', 0, 1, 2)
 
-com.grid(column=refx, row=refy, padx=8, pady=16)
+com.grid(column=refx, row=refy, padx=24, pady=16)
 
 com.current(0)
 
@@ -183,7 +183,8 @@ def enviarModo():
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
-tk.Button(comum, text="ENVIAR MODO", command=enviarModo, anchor=tk.CENTER, wraplength=110, justify=tk.CENTER, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+1, columnspan=2, padx=8, pady=12)
+tk.Button(comum, text="ENVIAR MODO", command=enviarModo, anchor=tk.CENTER, wraplength=120, justify=tk.CENTER, font=g,
+          relief='raised', bd=2, width=7).grid(column=0, row=refy+3)
 
 # endregion
 
@@ -199,9 +200,12 @@ def onoff():
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
-tk.Button(comum, text="ON/OFF", command=onoff, anchor=tk.CENTER, wraplength=110, justify=tk.CENTER, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+5, columnspan=2, padx=8, pady=12)
+tk.Button(comum, text="ON/OFF", command=onoff, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+5)
 
 # endregion
+
+for child in comum.winfo_children():
+    child.grid_configure(padx=10, pady=20)
 
 # endregion
 
@@ -602,7 +606,8 @@ def enviar():
         print()
     # endregion
 
-tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2, anchor=tk.CENTER, wraplength=150, justify=tk.CENTER).grid(column=0, row=refy+4, columnspan=2, padx=8, pady=12)
+tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2, anchor=tk.CENTER, wraplength=120,
+          justify=tk.CENTER, width=7).grid(column=0, row=refy+4)
 
 # endregion
 
