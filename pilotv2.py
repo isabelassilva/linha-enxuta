@@ -9,7 +9,7 @@ win = tk.Tk()
 
 win.title("Software RK8511")
 
-xsize = 1275
+xsize = 1300
 ysize = 780
 
 win.geometry('%dx%d' % (xsize, ysize))
@@ -155,7 +155,7 @@ comum.pack(side=tk.RIGHT, fill='both')
 
 # region Frame de Seleção da Porta
 
-porta = ttk.LabelFrame(comum, text='Porta')
+porta = ttk.LabelFrame(comum, text=' Porta ')
 
 porta.grid(column=refx, row=refy)
 
@@ -166,6 +166,28 @@ com['values'] = (' ', 0, 1, 2)
 com.grid(column=refx, row=refy, padx=24, pady=16)
 
 com.current(0)
+
+# endregion
+
+# region Frame de Memória
+
+memo = ttk.LabelFrame(comum, text=' Memória ')
+
+memo.grid(column=refx, row=refy+7)
+
+grupo = ttk.Combobox(memo, width=4, state='readonly', font=g)
+
+grupo['values'] = ('A', 'B', 'C', 'D')
+
+grupo.grid(column=refx, row=refy, padx=24, pady=16)
+
+grupo.current(0)
+
+
+def salvar():
+    pass
+
+tk.Button(memo, text="SALVAR", command=salvar, font=g, relief='raised', bd=2, width=5).grid(column=0, row=refy+1, padx=12, pady=16)
 
 # endregion
 
@@ -204,8 +226,19 @@ tk.Button(comum, text="ON/OFF", command=onoff, font=g, relief='raised', bd=2, wi
 
 # endregion
 
+# region Botão Trigger
+
+
+def trigger():
+    pass
+
+tk.Button(comum, text="TRIGGER", command=trigger, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+6)
+
+# endregion
+
+
 for child in comum.winfo_children():
-    child.grid_configure(padx=10, pady=20)
+    child.grid_configure(padx=30, pady=20)
 
 # endregion
 
@@ -607,7 +640,7 @@ def enviar():
     # endregion
 
 tk.Button(comum, text="ENVIAR VALORES", command=enviar, font=g, relief='raised', bd=2, anchor=tk.CENTER, wraplength=120,
-          justify=tk.CENTER, width=7).grid(column=0, row=refy+4)
+          justify=tk.CENTER, width=7).grid(column=0, row=refy+4, pady=13)
 
 # endregion
 
