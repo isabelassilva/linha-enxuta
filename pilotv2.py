@@ -217,7 +217,7 @@ def onoff():
     porta = com.get()
 
     if porta != ' ':
-        Popen(["./rk8511_bo.sh", porta], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        Popen(["./rk8511_bo.sh", porta, '2'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         status.configure(text=" ")
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
@@ -230,7 +230,13 @@ tk.Button(comum, text="ON/OFF", command=onoff, font=g, relief='raised', bd=2, wi
 
 
 def trigger():
-    pass
+    porta = com.get()
+
+    if porta != ' ':
+        Popen(["./rk8511_bo.sh", porta, '3'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        status.configure(text=" ")
+    else:
+        status.configure(text=" Selecione a PORTA de comunicação.")
 
 tk.Button(comum, text="TRIGGER", command=trigger, font=g, relief='raised', bd=2, width=7).grid(column=0, row=refy+6)
 
