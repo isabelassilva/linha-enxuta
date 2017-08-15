@@ -17,8 +17,12 @@ if [ "$2" = "0" ]; then                 # ABA DE MODOS OPERACIONAIS
 elif [ "$2" = "1" ]; then               # ABA DE TESTE AUTOMÁTICO
     frame="\x55\xaa\x20\x10\xd1"
 
-elif [ "$2" = "2" ]; then               # ON
-    frame="\x55\xaa\x11\xf0"
+elif [ "$2" = "2" ]; then               # ON/OFF
+    if [ "$3" = "0" ]; then
+        frame="\x55\xaa\x11\xf0"
+    elif [ "$3" = "1" ]; then
+        frame="\x55\xaa\x10\xf1"
+    fi
 
 elif [ "$2" = "3" ]; then               # TRIGGER
     frame="\x55\xaa\x31\xd0"

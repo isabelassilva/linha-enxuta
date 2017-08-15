@@ -217,8 +217,17 @@ def onoff():
     porta = com.get()
 
     if porta != ' ':
-        Popen(["./rk8511_bo.sh", porta, '2'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         status.configure(text=" ")
+
+        p = Popen(["./rk8511_rx.sh", porta], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+
+        if output != b'Can not open comport\n':
+            out = str(output)
+            out = out.split()
+            state = out[4]
+            Popen(["./rk8511_bo.sh", porta, '2', state], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
