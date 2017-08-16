@@ -1,4 +1,8 @@
 
+import numpy as np
+
+import os.path
+
 # region :: Configurações da Janela Principal
 
 import tkinter as tk
@@ -175,6 +179,19 @@ memo = ttk.LabelFrame(comum, text=' Memória ')
 
 memo.grid(column=refx, row=refy+7)
 
+
+def carregar(none):
+    adress = grupo.get()
+
+    file = 'MO_ARRAY_' + adress + '.npy'
+
+    if os.path.isfile(file):
+        mo_array = np.load(file)
+
+        for i in range(0, len(mo_array)):
+            strX[i].set(mo_array[i])
+
+
 grupo = ttk.Combobox(memo, width=4, state='readonly', font=g)
 
 grupo['values'] = ('A', 'B', 'C', 'D')
@@ -183,9 +200,18 @@ grupo.grid(column=refx, row=refy, padx=24, pady=16)
 
 grupo.current(0)
 
+grupo.bind("<<ComboboxSelected>>", carregar)
+
 
 def salvar():
-    pass
+    mo_array = np.array([Vcte.get(), Icte.get(), Pcte.get(), Rcte.get()])
+
+    adress = grupo.get()
+
+    file = 'MO_ARRAY_' + adress + '.npy'
+
+    np.save(file, mo_array)
+
 
 tk.Button(memo, text="SALVAR", command=salvar, font=g, relief='raised', bd=2, width=5).grid(column=0, row=refy+1, padx=12, pady=16)
 
