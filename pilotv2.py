@@ -191,26 +191,65 @@ def carregar(none):
         for i in range(0, len(mo_array)):
             strX[i].set(mo_array[i])
 
+    file = 'TA_ARRAY_' + adress + '.npy'
+
+    if os.path.isfile(file):
+        ta_array = np.load(file)
+
+        for i in range(0, PASSOS):
+            mode[i].current(ta_array[0, i])
+            valor[i].set(ta_array[1, i])
+            tempo[i].set(ta_array[2, i])
+            test[i].current(ta_array[3, i])
+            valorMin[i].set(ta_array[4, i])
+            valorMax[i].set(ta_array[5, i])
+
 
 grupo = ttk.Combobox(memo, width=4, state='readonly', font=g)
 
 grupo['values'] = ('A', 'B', 'C', 'D')
 
 grupo.grid(column=refx, row=refy, padx=24, pady=16)
-
 grupo.current(0)
 
 grupo.bind("<<ComboboxSelected>>", carregar)
 
 
 def salvar():
-    mo_array = np.array([Vcte.get(), Icte.get(), Pcte.get(), Rcte.get()])
-
     adress = grupo.get()
 
-    file = 'MO_ARRAY_' + adress + '.npy'
+    aba = ControleDeAbas.index(ControleDeAbas.select())
 
-    np.save(file, mo_array)
+    if aba == 0:
+
+        file = 'MO_ARRAY_' + adress + '.npy'
+
+        mo_array = np.array([Vcte.get(), Icte.get(), Pcte.get(), Rcte.get()])
+
+        np.save(file, mo_array)
+
+    else:
+
+        file = 'TA_ARRAY_' + adress + '.npy'
+
+        m = []
+        x = []
+        t = []
+        c = []
+        xmin = []
+        xmax = []
+
+        for i in range(0, PASSOS):
+            m.append(mode[i].current())
+            x.append(value[i].get())
+            t.append(time[i].get())
+            c.append(test[i].current())
+            xmin.append(minValue[i].get())
+            xmax.append(maxValue[i].get())
+
+        ta_array = np.array([m, x, t, c, xmin, xmax])
+
+        np.save(file, ta_array)
 
 
 tk.Button(memo, text="SALVAR", command=salvar, font=g, relief='raised', bd=2, width=5).grid(column=0, row=refy+1, padx=12, pady=16)
