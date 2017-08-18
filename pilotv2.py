@@ -75,9 +75,9 @@ refx = 0
 refy = 0
 
 ttk.Label(interface, text='Tensão (V):', font=f).grid(column=refx, row=refy, sticky='W')
-ttk.Label(interface, text='Potência (W):', font=f).grid(column=refx, row=refy+1, sticky='W')
-ttk.Label(interface, text='Corrente (A):', font=f).grid(column=refx+2, row=refy, sticky='W')
-ttk.Label(interface, text='Resistência (ohm):', font=f).grid(column=refx+2, row=refy+1, sticky='W')
+ttk.Label(interface, text='Potência (W):', font=f).grid(column=refx+2, row=refy, sticky='W')
+ttk.Label(interface, text='Corrente (A):', font=f).grid(column=refx, row=refy+1, sticky='W')
+ttk.Label(interface, text='Resistência (\u03a9):', font=f).grid(column=refx+2, row=refy+1, sticky='W')
 
 # endregion
 
@@ -98,7 +98,7 @@ R = ttk.Label(interface, text=' 0.00', width=w, relief='sunken', borderwidth=2, 
 R.grid(column=refx+3, row=refy+1, sticky='W')
 
 for child in interface.winfo_children():
-    child.grid_configure(padx=10, pady=6)
+    child.grid_configure(padx=20, pady=6)
 
 # endregion
 
@@ -292,7 +292,8 @@ def onoff():
             out = out.split()
             state = out[4]
             Popen(["./rk8511_bo.sh", porta, '2', state], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-
+        else:
+            status.configure(text=" Falha de comunicaçao: Não foi possível acessar a PORTA.")
     else:
         status.configure(text=" Selecione a PORTA de comunicação.")
 
@@ -338,7 +339,7 @@ modos = ["Tensão Constante",
          "Resistência Constante"]
 
 radVar = tk.IntVar()
-radVar.set(99)
+radVar.set(0)
 
 
 def radCall():
@@ -346,20 +347,24 @@ def radCall():
 
     if radSel == 0:
         for child in entradasModo.winfo_children():
-            child.configure(state='disabled', width=8)
+            child.configure(state='disabled')
         Vcte.configure(state='enabled')
+        Vcte.focus()
     elif radSel == 1:
         for child in entradasModo.winfo_children():
-            child.configure(state='disabled', width=8)
+            child.configure(state='disabled')
         Icte.configure(state='enabled')
+        Icte.focus()
     elif radSel == 2:
         for child in entradasModo.winfo_children():
-            child.configure(state='disabled', width=8)
+            child.configure(state='disabled')
         Pcte.configure(state='enabled')
+        Pcte.focus()
     elif radSel == 3:
         for child in entradasModo.winfo_children():
-            child.configure(state='disabled', width=8)
+            child.configure(state='disabled')
         Rcte.configure(state='enabled')
+        Rcte.focus()
 
 
 for row in range(len(modos)):
@@ -389,9 +394,22 @@ strR = tk.StringVar()
 Rcte = ttk.Entry(entradasModo, textvariable=strR, font=f)
 Rcte.grid(column=refx+1, row=refy+3, sticky=tk.W)
 
+
 for child in entradasModo.winfo_children():
-    child.grid_configure(padx=10,pady=6)
+    child.grid_configure(padx=10, pady=6)
     child.configure(state='disabled', width=8)
+
+Vcte.configure(state='enabled')
+Vcte.focus()
+
+# endregion
+
+# region Unidades
+
+ttk.Label(modo, text='(V)', font=f).grid(column=refx+2, row=refy)
+ttk.Label(modo, text='(W)', font=f).grid(column=refx+2, row=refy+1)
+ttk.Label(modo, text='(A)', font=f).grid(column=refx+2, row=refy+2)
+ttk.Label(modo, text='(\u03a9)', font=f).grid(column=refx+2, row=refy+3)
 
 # endregion
 
