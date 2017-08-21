@@ -204,6 +204,8 @@ def carregar(none):
             valorMin[i].set(ta_array[4, i])
             valorMax[i].set(ta_array[5, i])
 
+    valueTypeDefiner(None)
+
 
 grupo = ttk.Combobox(memo, width=4, state='readonly', font=g)
 
@@ -821,9 +823,12 @@ def valueTypeDefiner(none):
             else:
                 test[n].current(1)
 
-        elif not isnum(valor[n].get()):
-            valor[n].set('0.000')
-            value[n].configure(state='enabled')
+        else:
+            if not isnum(valor[n].get()):
+                valor[n].set('0.000')
+                value[n].configure(state='enabled')
+            else:
+                value[n].configure(state='enabled')
 
             test[n].configure(state='enabled')
             test[n].configure(state='readonly')
