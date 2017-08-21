@@ -1054,4 +1054,6 @@ for child in conf_parametros.winfo_children():
 
 # endregion
 
+carregar(None)
+
 win.mainloop()
