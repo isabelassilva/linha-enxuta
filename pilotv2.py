@@ -204,8 +204,12 @@ def carregar(none):
             valorMin[i].set(ta_array[4, i])
             valorMax[i].set(ta_array[5, i])
 
-    valueTypeDefiner(None)
+        passos.set(ta_array[6, 0])
+        selectstep(None)
+        modo_saida.set(ta_array[6, 1])
+        modo_trigger.set(ta_array[6, 2])
 
+    valueTypeDefiner(None)
 
 grupo = ttk.Combobox(memo, width=4, state='readonly', font=g)
 
@@ -240,6 +244,10 @@ def salvar():
         c = []
         xmin = []
         xmax = []
+        p = passos.get()
+        ms = modo_saida.get()
+        mt = modo_trigger.get()
+        parameters = [p, ms, mt] + 17*['0']
 
         for i in range(0, PASSOS):
             m.append(mode[i].current())
@@ -249,7 +257,7 @@ def salvar():
             xmin.append(minValue[i].get())
             xmax.append(maxValue[i].get())
 
-        ta_array = np.array([m, x, t, c, xmin, xmax])
+        ta_array = np.array([m, x, t, c, xmin, xmax, parameters])
 
         np.save(file, ta_array)
 
