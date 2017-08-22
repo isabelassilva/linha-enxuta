@@ -1,7 +1,7 @@
 
 import numpy as np
 
-import os.path
+import os
 
 # region :: Configurações da Janela Principal
 
@@ -232,7 +232,11 @@ def salvar():
 
         mo_array = np.array([Vcte.get(), Icte.get(), Pcte.get(), Rcte.get()])
 
+        os.chmod(file, 0o777)
+
         np.save(file, mo_array)
+
+        os.chmod(file, 0o444)
 
     else:
 
@@ -259,8 +263,11 @@ def salvar():
 
         ta_array = np.array([m, x, t, c, xmin, xmax, parameters])
 
+        os.chmod(file, 0o777)
+
         np.save(file, ta_array)
 
+        os.chmod(file, 0o444)
 
 tk.Button(memo, text="SALVAR", command=salvar, font=g, relief='raised', bd=2, width=5).grid(column=0, row=refy+1, padx=12, pady=16)
 
